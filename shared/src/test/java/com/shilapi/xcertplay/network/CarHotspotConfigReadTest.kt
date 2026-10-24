@@ -25,12 +25,12 @@ class CarHotspotConfigReadTest {
 
     private val key by lazy { KeyPairGenerator.getInstance("RSA").apply { initialize(2048) }.generateKeyPair() }
 
-    // The import switch is the driver's own tap. Without asking, a car that had never seen DiPlay's
+    // The import switch is the driver's own tap. Without asking, a car that had never seen xPlay's
     // key answered "not approved" and showed no prompt (Galaxy Note20, Android 13).
     @Test fun aReadThatMayAskOffersTheKeyAndReadsTheCarHotspot() {
         val adbd = FakeAdbd(key, knowsKey = false, approves = true,
             output = "DIPLAY_HOTSPOT_APCONFIG_READ_V1|${reply("Car-Hotspot", "secret-pass", 1)}\n")
-        val outcome = CarHotspotConfigRead.readWithAdb(LocalAdb(key, port = adbd.port), "/data/app/diplay.apk",
+        val outcome = CarHotspotConfigRead.readWithAdb(LocalAdb(key, port = adbd.port), "/data/app/xplay.apk",
             mayAsk = true, log = ::log)
         assertTrue(adbd.offeredKey)
         assertEquals(CarHotspotSavedCredentials("Car-Hotspot", "secret-pass", ManualHotspotSecurity.WPA2), outcome.credentials)
@@ -39,7 +39,7 @@ class CarHotspotConfigReadTest {
 
     @Test fun aReadThatMayNotAskLeavesAnUnknownKeyUnapproved() {
         val adbd = FakeAdbd(key, knowsKey = false, approves = true)
-        val outcome = CarHotspotConfigRead.readWithAdb(LocalAdb(key, port = adbd.port), "/data/app/diplay.apk",
+        val outcome = CarHotspotConfigRead.readWithAdb(LocalAdb(key, port = adbd.port), "/data/app/xplay.apk",
             mayAsk = false, log = ::log)
         assertFalse(adbd.offeredKey)
         assertEquals(CarHotspotConfigRead.Reason.ADB_UNAVAILABLE, outcome.reason)
@@ -49,7 +49,7 @@ class CarHotspotConfigReadTest {
     @Test fun adbReadCarriesTheSavedCredentials() {
         val outcome = CarHotspotConfigRead.readAdb(
             { _, _ -> "noise\nDIPLAY_HOTSPOT_APCONFIG_READ_V1|${reply("Car-Hotspot", "pass|word", 1)}\n" },
-            "/data/app/diplay.apk", 4_000, ::log)
+            "/data/app/xplay.apk", 4_000, ::log)
         assertEquals(CarHotspotSavedCredentials("Car-Hotspot", "pass|word", ManualHotspotSecurity.WPA2), outcome.credentials)
         assertNull(outcome.reason)
     }

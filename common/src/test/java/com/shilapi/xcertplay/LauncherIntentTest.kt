@@ -22,12 +22,12 @@ import org.robolectric.util.ReflectionHelpers
 @Config(sdk = [28, 33], manifest = Config.NONE)
 @LooperMode(LooperMode.Mode.PAUSED)
 class LauncherIntentTest {
-    private var controller: ActivityController<DiPlayActivity>? = null
+    private var controller: ActivityController<xPlayActivity>? = null
     private var stops = 0
 
     @Before fun setup() {
         val app = RuntimeEnvironment.getApplication()
-        app.getSharedPreferences("diplay", 0).edit().clear().commit()
+        app.getSharedPreferences("xplay", 0).edit().clear().commit()
         app.getSharedPreferences("xcertplay_airplay", 0).edit().clear().commit()
         CarPlayBackgroundSession.clear()
         val stop: ((() -> Unit) -> Unit) = { done -> stops++; done() }
@@ -42,16 +42,16 @@ class LauncherIntentTest {
 
     @Test
     fun onlyAPlainLauncherIntentReturnsToCarPlay() {
-        assertTrue(DiPlayActivity.isLauncherIntent(launcher()))
-        assertFalse(DiPlayActivity.isLauncherIntent(launcher().putExtra("page", "settings")))
-        assertFalse(DiPlayActivity.isLauncherIntent(launcher().putExtra("page", null as String?)))
-        assertFalse(DiPlayActivity.isLauncherIntent(launcher().putExtra("page", 123)))
-        assertFalse(DiPlayActivity.isLauncherIntent(Intent(Intent.ACTION_MAIN)))
-        assertFalse(DiPlayActivity.isLauncherIntent(Intent().putExtra("page", "connection")))
+        assertTrue(xPlayActivity.isLauncherIntent(launcher()))
+        assertFalse(xPlayActivity.isLauncherIntent(launcher().putExtra("page", "settings")))
+        assertFalse(xPlayActivity.isLauncherIntent(launcher().putExtra("page", null as String?)))
+        assertFalse(xPlayActivity.isLauncherIntent(launcher().putExtra("page", 123)))
+        assertFalse(xPlayActivity.isLauncherIntent(Intent(Intent.ACTION_MAIN)))
+        assertFalse(xPlayActivity.isLauncherIntent(Intent().putExtra("page", "connection")))
     }
 
     @Test fun freshLauncherReturnsToTheExistingHostWithoutStoppingTheSession() {
-        controller = Robolectric.buildActivity(DiPlayActivity::class.java, launcher()).create()
+        controller = Robolectric.buildActivity(xPlayActivity::class.java, launcher()).create()
         val activity = controller!!.get()
         assertTrue(activity.isFinishing)
         assertEquals(CarPlayHostActivity::class.java.name,
@@ -61,7 +61,7 @@ class LauncherIntentTest {
     }
 
     @Test fun launcherDeliveredToExistingSettingsOpensProjectionAndClearsReturnNavigation() {
-        controller = Robolectric.buildActivity(DiPlayActivity::class.java,
+        controller = Robolectric.buildActivity(xPlayActivity::class.java,
             Intent().putExtra("page", "settings")).create()
         val activity = controller!!.get()
         ReflectionHelpers.setField(activity, "connectionSettingsReturnCategory", SettingsCategory.ADVANCED)
@@ -79,7 +79,7 @@ class LauncherIntentTest {
     }
 
     @Test fun recreationRetainsSettingsInsteadOfRedirectingToProjection() {
-        controller = Robolectric.buildActivity(DiPlayActivity::class.java, launcher())
+        controller = Robolectric.buildActivity(xPlayActivity::class.java, launcher())
             .create(Bundle().apply { putString("page", "settings") })
         val activity = controller!!.get()
         assertFalse(activity.isFinishing)

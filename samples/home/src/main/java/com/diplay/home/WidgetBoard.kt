@@ -1,4 +1,4 @@
-package com.diplay.home
+package com.xplay.home
 
 import android.app.Activity
 import android.app.AlertDialog

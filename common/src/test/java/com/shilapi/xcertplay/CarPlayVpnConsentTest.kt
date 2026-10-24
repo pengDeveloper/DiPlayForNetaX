@@ -144,13 +144,13 @@ class CarPlayVpnConsentTest {
         assertNull(ReflectionHelpers.getField<Any?>(activity, "controller"))
         val message = ReflectionHelpers.getField<TextView>(activity, "stageStatusView").text.toString()
         assertTrue(message.contains("VPN authorization"))
-        assertTrue(message.contains("Return to DiPlay"))
+        assertTrue(message.contains("Return to xPlay"))
         assertFalse(message.contains("Exception"))
         assertFalse(message.contains("adb shell"))
     }
 
     private fun field(name: String): Boolean = ReflectionHelpers.getField(activity, name)
-    private fun log() = File(activity.filesDir, "logs/diplay.log").readText()
+    private fun log() = File(activity.filesDir, "logs/xplay.log").readText()
     private fun invoke(name: String) {
         try { activity.javaClass.getDeclaredMethod(name).apply { isAccessible = true }.invoke(activity) }
         catch (error: InvocationTargetException) { throw error.targetException }

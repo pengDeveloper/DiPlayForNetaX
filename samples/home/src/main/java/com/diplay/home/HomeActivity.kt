@@ -1,4 +1,4 @@
-package com.diplay.home
+package com.xplay.home
 
 import android.app.Activity
 import android.content.Context
@@ -25,12 +25,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 
 /**
- * DiPlay Home: the live CarPlay map, any Android widgets and the app list on one screen. An
+ * xPlay Home: the live CarPlay map, any Android widgets and the app list on one screen. An
  * ordinary app, so it can be the home screen without BYD's system privileges; BYD's own home
  * stays installed and one button away.
  */
 class HomeActivity : ComponentActivity() {
-    private lateinit var mapPanel: DiPlayMapPanel
+    private lateinit var mapPanel: xPlayMapPanel
     private lateinit var board: WidgetBoard
     private lateinit var appsOverlay: View
     private lateinit var appsAdapter: AppsAdapter
@@ -39,7 +39,7 @@ class HomeActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mapPanel = DiPlayMapPanel(this)
+        mapPanel = xPlayMapPanel(this)
         val widgetColumn = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         board = WidgetBoard(this, widgetColumn)
         val landscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE

@@ -14,7 +14,7 @@ import android.os.IBinder
 import com.shilapi.xcertplay.host.R
 
 /** Keeps an explicitly started connection alive when another car app is in the foreground. */
-class DiPlaySessionService : Service() {
+class xPlaySessionService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent?.action == ACTION_STOP) {
@@ -32,10 +32,10 @@ class DiPlaySessionService : Service() {
             Notification.Builder(this).setPriority(Notification.PRIORITY_LOW)
         }
         val open = PendingIntent.getActivity(this, 0, Intent(this, CarPlayHostActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        val stop = PendingIntent.getService(this, 1, Intent(this, DiPlaySessionService::class.java).setAction(ACTION_STOP), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        val stop = PendingIntent.getService(this, 1, Intent(this, xPlaySessionService::class.java).setAction(ACTION_STOP), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         val notification = builder
-            .setSmallIcon(R.drawable.ic_diplay_notification)
-            .setContentTitle("DiPlay")
+            .setSmallIcon(R.drawable.ic_xplay_notification)
+            .setContentTitle("xPlay")
             .setContentText("CarPlay connection running")
             .setContentIntent(open).setOngoing(true)
             .addAction(Notification.Action.Builder(null, "Disconnect", stop).build()).build()
@@ -45,7 +45,7 @@ class DiPlaySessionService : Service() {
                 types = types or ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE
             }
             // Without it Android stops location updates while another car app (the reversing camera,
-            // the car's own map) covers CarPlay, and the iPhone gets no position until DiPlay is back.
+            // the car's own map) covers CarPlay, and the iPhone gets no position until xPlay is back.
             if (AirPlayPersistence.loadLocationReportingEnabled(this) &&
                 checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 types = types or ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
@@ -61,7 +61,7 @@ class DiPlaySessionService : Service() {
         stopSelf()
     }
     companion object {
-        const val ACTION_STOP = "com.shihab.diplay.DISCONNECT"
-        private const val CHANNEL = "diplay_connection"
+        const val ACTION_STOP = "com.xbutler.xplay.DISCONNECT"
+        private const val CHANNEL = "xplay_connection"
     }
 }

@@ -1,24 +1,24 @@
-# Build DiPlay
+# Build xPlay
 
-Use this procedure to build the DiPlay app for an Android head unit.
+Use this procedure to build the xPlay app for an Android head unit.
 Run the commands from the repository root, where `gradlew` and `settings.gradle.kts` are located.
 
 ## Select the application
 
 This repository contains several Android applications.
-Select `mobile` to build the main DiPlay app.
+Select `mobile` to build the main xPlay app.
 
 | Gradle module | Purpose | Debug APK |
 | --- | --- | --- |
-| `:mobile` | Main DiPlay app for Android head units | `mobile/build/outputs/apk/debug/mobile-debug.apk` |
-| `:maphost` | Sample application that displays a map from DiPlay | `samples/maphost/build/outputs/apk/debug/maphost-debug.apk` |
-| `:home` | Optional DiPlay Home launcher | `samples/home/build/outputs/apk/debug/home-debug.apk` |
+| `:mobile` | Main xPlay app for Android head units | `mobile/build/outputs/apk/debug/mobile-debug.apk` |
+| `:maphost` | Sample application that displays a map from xPlay | `samples/maphost/build/outputs/apk/debug/maphost-debug.apk` |
+| `:home` | Optional xPlay Home launcher | `samples/home/build/outputs/apk/debug/home-debug.apk` |
 | `:automotive` | Separate Android Automotive application inherited from xcertplay | `automotive/build/outputs/apk/debug/automotive-debug.apk` |
 
 The `:common` and `:shared` modules are libraries.
 The applications use these libraries.
 
-If the installed app is **DiPlay map host**, you selected `:maphost` or its APK.
+If the installed app is **xPlay map host**, you selected `:maphost` or its APK.
 Build `:mobile` and select `mobile-debug.apk` to install the main app.
 A command such as `./gradlew assembleDebug` can build more than one application.
 Use the module name in each build command to select the required application.
@@ -73,8 +73,8 @@ Check that this file exists:
 mobile/build/outputs/apk/debug/mobile-debug.apk
 ```
 
-The debug application ID is `com.shihab.diplay.hudtest`.
-The release application ID is `com.shihab.diplay`.
+The debug application ID is `com.xbutler.xplay.hudtest`.
+The release application ID is `com.xbutler.xplay`.
 
 The source APK contains no accessory identity unless you supply runtime authentication assets.
 Standalone CarPlay needs these assets to connect to an iPhone.
@@ -173,7 +173,7 @@ The retired `build-beta.py` helper is no longer part of the build procedure.
 
 | Symptom | Action |
 | --- | --- |
-| Installed app is DiPlay map host | Select `mobile` in Android Studio. Build and install the APK from the `mobile` output directory. |
+| Installed app is xPlay map host | Select `mobile` in Android Studio. Build and install the APK from the `mobile` output directory. |
 | Gradle cannot find the Android SDK | Set `ANDROID_HOME` or the `sdk.dir` value in `local.properties`. |
 | A required SDK or NDK package is absent | Install the listed package with SDK Manager. |
 | Java or Gradle JDK version is incorrect | Set the terminal JDK and Android Studio Gradle JDK to Java 25. |

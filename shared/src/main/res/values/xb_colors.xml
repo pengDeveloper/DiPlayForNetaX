@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 统一使用 X管家 图标：黑底 -->
+    <color name="icon_bg">#FF0C0C0C</color>
+</resources>

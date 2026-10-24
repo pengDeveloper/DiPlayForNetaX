@@ -1,4 +1,4 @@
-package com.diplay.home
+package com.xplay.home
 
 import android.view.View
 import android.view.ViewGroup

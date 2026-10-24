@@ -32,7 +32,7 @@ class SettingsBackupCodecTest {
             .putString("mfi_target", "REMOTE")
             .putBoolean("cluster_map_enabled", true)
             .apply()
-        prefs("diplay").edit()
+        prefs("xplay").edit()
             .putBoolean("auto_connect", true)
             .putString("page", "settings")
             .putString("phone_name", "iphone-of-owner")
@@ -51,21 +51,21 @@ class SettingsBackupCodecTest {
         assertFalse(airplay.has("identity_private"))
         assertFalse(airplay.has("manual_hotspot_passphrase"))
         assertFalse(airplay.has("pairing_ids"))
-        val diplay = document.getJSONObject("settings").getJSONObject("diplay")
-        assertTrue(diplay.getBoolean("auto_connect"))
-        assertFalse(diplay.has("page"))
-        assertFalse(diplay.has("phone_name"))
+        val xplay = document.getJSONObject("settings").getJSONObject("xplay")
+        assertTrue(xplay.getBoolean("auto_connect"))
+        assertFalse(xplay.has("page"))
+        assertFalse(xplay.has("phone_name"))
         assertEquals(80, document.getJSONObject("settings").getJSONObject("carplay_picture").getInt("brightness"))
-        assertFalse(document.getJSONObject("settings").has("diplay_car_hotspot"))
+        assertFalse(document.getJSONObject("settings").has("xplay_car_hotspot"))
     }
 
     @Test
     fun importAppliesKnownKeysAndSkipsUnknownOrForbidden() {
         val document = """
-            {"format": "diplay-settings", "version": 1, "settings": {
+            {"format": "xplay-settings", "version": 1, "settings": {
               "xcertplay_airplay": {"display_fps": 48, "brand_new_key": 7, "manual_hotspot_passphrase": "x",
                 "pairing.attacker": "00ff"},
-              "diplay": {"auto_connect": true, "page": "about"},
+              "xplay": {"auto_connect": true, "page": "about"},
               "carplay_picture": {"brightness": 66}
             }}
         """.trimIndent()
@@ -78,8 +78,8 @@ class SettingsBackupCodecTest {
         // Only listed settings travel: an imported file cannot add an iPhone pairing key or any unknown key.
         assertFalse(prefs("xcertplay_airplay").contains("pairing.attacker"))
         assertFalse(prefs("xcertplay_airplay").contains("brand_new_key"))
-        assertEquals(true, prefs("diplay").getBoolean("auto_connect", false))
-        assertFalse(prefs("diplay").contains("page"))
+        assertEquals(true, prefs("xplay").getBoolean("auto_connect", false))
+        assertFalse(prefs("xplay").contains("page"))
         assertEquals(66, prefs("carplay_picture").getInt("brightness", 0))
     }
 
@@ -111,7 +111,7 @@ class SettingsBackupCodecTest {
     @Test
     fun importRejectsForeignOrNewerDocuments() {
         assertTrue(SettingsBackupCodec.import(context, "{\"format\":\"other\",\"version\":1,\"settings\":{}}".toByteArray()).invalid)
-        assertTrue(SettingsBackupCodec.import(context, "{\"format\":\"diplay-settings\",\"version\":99,\"settings\":{}}".toByteArray()).invalid)
+        assertTrue(SettingsBackupCodec.import(context, "{\"format\":\"xplay-settings\",\"version\":99,\"settings\":{}}".toByteArray()).invalid)
         assertTrue(SettingsBackupCodec.import(context, "not json".toByteArray()).invalid)
         assertTrue(SettingsBackupCodec.import(context, "{}".toByteArray()).invalid)
     }
@@ -120,7 +120,7 @@ class SettingsBackupCodecTest {
     fun importMatchesTypesAgainstStoredValues() {
         prefs("xcertplay_airplay").edit().putInt("display_fps", 60).putBoolean("hevc_enabled", false).apply()
         val document = """
-            {"format": "diplay-settings", "version": 1, "settings": {
+            {"format": "xplay-settings", "version": 1, "settings": {
               "xcertplay_airplay": {"display_fps": "48", "hevc_enabled": true, "display_scale_tenths": 85}
             }}
         """.trimIndent()
@@ -134,9 +134,9 @@ class SettingsBackupCodecTest {
 
     @Test
     fun importRejectsMissingOrUnsupportedVersions() {
-        assertTrue(SettingsBackupCodec.import(context, "{\"format\":\"diplay-settings\",\"settings\":{}}".toByteArray()).invalid)
-        assertTrue(SettingsBackupCodec.import(context, "{\"format\":\"diplay-settings\",\"version\":0,\"settings\":{}}".toByteArray()).invalid)
-        assertTrue(SettingsBackupCodec.import(context, "{\"format\":\"diplay-settings\",\"version\":-1,\"settings\":{}}".toByteArray()).invalid)
+        assertTrue(SettingsBackupCodec.import(context, "{\"format\":\"xplay-settings\",\"settings\":{}}".toByteArray()).invalid)
+        assertTrue(SettingsBackupCodec.import(context, "{\"format\":\"xplay-settings\",\"version\":0,\"settings\":{}}".toByteArray()).invalid)
+        assertTrue(SettingsBackupCodec.import(context, "{\"format\":\"xplay-settings\",\"version\":-1,\"settings\":{}}".toByteArray()).invalid)
     }
 
     @Test
@@ -147,7 +147,7 @@ class SettingsBackupCodecTest {
             .putInt("display_fps", 60)
             .apply()
         val document = """
-            {"format": "diplay-settings", "version": 1, "settings": {
+            {"format": "xplay-settings", "version": 1, "settings": {
               "xcertplay_airplay": {"cluster_test_counter": 1.5, "ui_scale_percent": 1e300, "display_fps": 3000000000}
             }}
         """.trimIndent()
@@ -168,7 +168,7 @@ class SettingsBackupCodecTest {
             .putString("manual_hotspot_ssid", "car-ap")
             .putFloat("ui_scale_percent", 100f)
             .apply()
-        prefs("diplay_car_hotspot").edit().putBoolean("auto_enable", true).apply()
+        prefs("xplay_car_hotspot").edit().putBoolean("auto_enable", true).apply()
         val document = SettingsBackupCodec.export(context, "0.2.17")
         prefs("xcertplay_airplay").edit()
             .putInt("display_fps", 30)
@@ -177,7 +177,7 @@ class SettingsBackupCodecTest {
             .putString("manual_hotspot_ssid", "changed")
             .putFloat("ui_scale_percent", 120f)
             .apply()
-        prefs("diplay_car_hotspot").edit().putBoolean("auto_enable", false).apply()
+        prefs("xplay_car_hotspot").edit().putBoolean("auto_enable", false).apply()
         val outcome = SettingsBackupCodec.import(context, document)
         assertEquals(false, outcome.invalid)
         val airplay = prefs("xcertplay_airplay")
@@ -187,7 +187,7 @@ class SettingsBackupCodecTest {
         // The car's hotspot name is not part of a backup.
         assertEquals("changed", airplay.getString("manual_hotspot_ssid", ""))
         assertEquals(100f, airplay.getFloat("ui_scale_percent", 0f))
-        assertEquals(true, prefs("diplay_car_hotspot").getBoolean("auto_enable", false))
+        assertEquals(true, prefs("xplay_car_hotspot").getBoolean("auto_enable", false))
         assertFalse(airplay.contains("identity_private"))
     }
 }

@@ -14,7 +14,7 @@ class ClusterLaunchGateTest {
     }
 
     @Test fun theLaunchWaitsForTheMainWindowsFirstFocus() {
-        // #536: launched from onResume, the cluster window took focus before DiPlay hid the system bars.
+        // #536: launched from onResume, the cluster window took focus before xPlay hid the system bars.
         assertFalse(gate.request(now = 0, hostFocused = false))
         assertFalse(gate.due(now = 100, hostFocused = false, hostVisible = true))
         assertTrue(gate.holdsCarPlayStart(now = 100, routeSettling = false))

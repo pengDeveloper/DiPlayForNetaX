@@ -16,8 +16,8 @@ class UpdateCatalogTest {
             "tag_name": "v0.2.15",
             "draft": true,
             "assets": [
-              {"name": "DiPlay-0.2.15.apk", "browser_download_url": "https://github.com/shihabal3amri/DiPlay/releases/download/v0.2.15/DiPlay-0.2.15.apk"},
-              {"name": "SHA256SUMS.txt", "browser_download_url": "https://github.com/shihabal3amri/DiPlay/releases/download/v0.2.15/SHA256SUMS.txt"}
+              {"name": "xPlay-0.2.15.apk", "browser_download_url": "https://github.com/shihabal3amri/xPlay/releases/download/v0.2.15/xPlay-0.2.15.apk"},
+              {"name": "SHA256SUMS.txt", "browser_download_url": "https://github.com/shihabal3amri/xPlay/releases/download/v0.2.15/SHA256SUMS.txt"}
             ]
           },
           {
@@ -25,8 +25,8 @@ class UpdateCatalogTest {
             "draft": false,
             "prerelease": true,
             "assets": [
-              {"name": "DiPlay-0.2.14.apk", "browser_download_url": "https://github.com/shihabal3amri/DiPlay/releases/download/v0.2.14/DiPlay-0.2.14.apk"},
-              {"name": "SHA256SUMS.txt", "browser_download_url": "https://github.com/shihabal3amri/DiPlay/releases/download/v0.2.14/SHA256SUMS.txt"}
+              {"name": "xPlay-0.2.14.apk", "browser_download_url": "https://github.com/shihabal3amri/xPlay/releases/download/v0.2.14/xPlay-0.2.14.apk"},
+              {"name": "SHA256SUMS.txt", "browser_download_url": "https://github.com/shihabal3amri/xPlay/releases/download/v0.2.14/SHA256SUMS.txt"}
             ]
           }
         ]
@@ -36,13 +36,13 @@ class UpdateCatalogTest {
     fun skipsDraftsAndReturnsTheFirstPublishedRelease() {
         val release = UpdateCatalog.parse(releaseJson)
         assertEquals("v0.2.14", release?.tagName)
-        assertEquals("DiPlay-0.2.14.apk", release?.apkName)
+        assertEquals("xPlay-0.2.14.apk", release?.apkName)
         assertEquals(
-            "https://github.com/shihabal3amri/DiPlay/releases/download/v0.2.14/DiPlay-0.2.14.apk",
+            "https://github.com/shihabal3amri/xPlay/releases/download/v0.2.14/xPlay-0.2.14.apk",
             release?.apkUrl,
         )
         assertEquals(
-            "https://github.com/shihabal3amri/DiPlay/releases/download/v0.2.14/SHA256SUMS.txt",
+            "https://github.com/shihabal3amri/xPlay/releases/download/v0.2.14/SHA256SUMS.txt",
             release?.checksumsUrl,
         )
     }
@@ -64,7 +64,7 @@ class UpdateCatalogTest {
         val json = """
             [
               {"tag_name": "v0.2.14", "draft": false, "assets": [
-                {"name": "DiPlay-0.2.14.apk", "browser_download_url": "https://example.com/DiPlay-0.2.14.apk"}
+                {"name": "xPlay-0.2.14.apk", "browser_download_url": "https://example.com/xPlay-0.2.14.apk"}
               ]}
             ]
         """.trimIndent()

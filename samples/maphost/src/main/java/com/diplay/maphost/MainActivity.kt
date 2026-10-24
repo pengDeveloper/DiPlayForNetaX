@@ -1,4 +1,4 @@
-package com.diplay.maphost
+package com.xplay.maphost
 
 import android.app.Activity
 import android.content.ComponentName
@@ -22,12 +22,12 @@ import android.widget.LinearLayout
 import android.widget.TextView
 
 /**
- * A minimal "launcher" that shows DiPlay's live dashboard map in its own layout.
+ * A minimal "launcher" that shows xPlay's live dashboard map in its own layout.
  *
- * 1. Find and bind DiPlay's service by its action.
+ * 1. Find and bind xPlay's service by its action.
  * 2. When both the service and the SurfaceView are ready, send ATTACH with the SurfaceView's host
  *    token, display and size.
- * 3. Put the SurfacePackage DiPlay sends back into the SurfaceView.
+ * 3. Put the SurfacePackage xPlay sends back into the SurfaceView.
  * 4. Send RESIZE when the view changes size and DETACH when the screen goes away.
  */
 class MainActivity : Activity() {
@@ -97,7 +97,7 @@ class MainActivity : Activity() {
         })
     }
 
-    // The dashboard map is 8:3; other shapes are filled and cropped by DiPlay.
+    // The dashboard map is 8:3; other shapes are filled and cropped by xPlay.
     private fun mapParams() = FrameLayout.LayoutParams(mapWidth, mapWidth * 3 / 8, Gravity.START)
 
     override fun onStart() {
@@ -181,8 +181,8 @@ class MainActivity : Activity() {
     }
 
     private companion object {
-        // DiPlay's protocol (MapEmbedService); copy these into your launcher.
-        const val ACTION = "com.shihab.diplay.action.EMBED_MAP"
+        // xPlay's protocol (MapEmbedService); copy these into your launcher.
+        const val ACTION = "com.xbutler.xplay.action.EMBED_MAP"
         const val MSG_ATTACH = 1
         const val MSG_RESIZE = 2
         const val MSG_DETACH = 3

@@ -16,7 +16,7 @@ import com.shilapi.xcertplay.network.CarHotspotConfigWrite.Result
 class CarHotspotConfigWriteTest {
     private val logs = mutableListOf<String>()
     private fun log(message: String) { logs += message }
-    private val credentials = HotspotCredentials("DiPlay", "password1", ManualHotspotSecurity.WPA2)
+    private val credentials = HotspotCredentials("xPlay", "password1", ManualHotspotSecurity.WPA2)
 
     @Test fun onlyAndroidSevenPointOneAndElevenPlusAreSupported() {
         listOf(23, 24, 26, 27, 28, 29).forEach { assertFalse(CarHotspotConfigWrite.supported(it)) }
@@ -44,7 +44,7 @@ class CarHotspotConfigWriteTest {
     @Test fun writeAppliesRawSsidAndWpa2Credentials() {
         val config = WifiConfiguration()
         CarHotspotConfigWrite.applyTo(config, credentials)
-        assertEquals("DiPlay", config.SSID)
+        assertEquals("xPlay", config.SSID)
         assertEquals("password1", config.preSharedKey)
         assertTrue(config.allowedKeyManagement.get(WifiConfiguration.KeyMgmt.WPA2_PSK))
     }
@@ -70,7 +70,7 @@ class CarHotspotConfigWriteTest {
 
     @Test fun appWriteVerifiesTheReadback() {
         var written: WifiConfiguration? = null
-        assertEquals(CarHotspotConfigWrite.WriteOutcome(Result.WRITTEN, "DiPlay"),
+        assertEquals(CarHotspotConfigWrite.WriteOutcome(Result.WRITTEN, "xPlay"),
             CarHotspotConfigWrite.writeApp(credentials,
             newConfig = { WifiConfiguration() },
             write = { written = it; true },
@@ -99,8 +99,8 @@ class CarHotspotConfigWriteTest {
             write = { written = it; true },
             readBack = { written },
             log = ::log)
-        assertEquals(CarHotspotConfigWrite.WriteOutcome(Result.WRITTEN, "DiPlay"), outcome)
-        assertEquals("DiPlay", written?.SSID)
+        assertEquals(CarHotspotConfigWrite.WriteOutcome(Result.WRITTEN, "xPlay"), outcome)
+        assertEquals("xPlay", written?.SSID)
     }
 
     @Test fun aRejectedWriteFails() {
@@ -144,11 +144,11 @@ class CarHotspotConfigWriteTest {
         assertEquals(CarHotspotConfigWrite.WriteOutcome(Result.WRITTEN, "Car-Original"), CarHotspotConfigWrite.writeAdb(
             { sent, _, pushed -> command = sent; stdin = pushed;
                 "noise\nDIPLAY_HOTSPOT_APCONFIG_V1|ok|Q2FyLU9yaWdpbmFs\n" },
-            "/data/app/diplay.apk", credentials, 4_000, ::log))
+            "/data/app/xplay.apk", credentials, 4_000, ::log))
         command!!.let {
             assertTrue(it.contains("app_process /system/bin com.shilapi.xcertplay.network.CarHotspotStartMain"))
             assertTrue(it.contains(" apconfig "))
-            assertTrue(it.contains(" 'DiPlay' AUTO"))
+            assertTrue(it.contains(" 'xPlay' AUTO"))
             assertFalse(it.contains("password1"))
         }
         assertEquals("9\npassword1", String(stdin!!, Charsets.UTF_8))

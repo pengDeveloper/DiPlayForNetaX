@@ -488,7 +488,7 @@ class CarPlayHostSettingsTest {
         assertSame(controller, field("controller"))
         assertEquals(0, field("restartGeneration"))
         val intent = shadowOf(activity).nextStartedActivity
-        assertEquals(DiPlayActivity::class.java.name, intent.component!!.className)
+        assertEquals(xPlayActivity::class.java.name, intent.component!!.className)
         assertEquals("settings", intent.getStringExtra("page"))
     }
 
@@ -498,7 +498,7 @@ class CarPlayHostSettingsTest {
         fullSettingsButton().performClick()
         assertNull(ShadowAlertDialog.getLatestAlertDialog())
         assertFalse(field("menuOpen") as Boolean)
-        assertEquals(DiPlayActivity::class.java.name,
+        assertEquals(xPlayActivity::class.java.name,
             shadowOf(activity).nextStartedActivity.component!!.className)
     }
 
@@ -644,7 +644,7 @@ class CarPlayHostSettingsTest {
         )
         val heading = views(menu()).filterIsInstance<TextView>()
             .first { it.text == activity.getString(R.string.carplay_settings) }
-        assertEquals(DiPlayPalette.LIGHT.overlayPrimaryText, heading.currentTextColor)
+        assertEquals(xPlayPalette.LIGHT.overlayPrimaryText, heading.currentTextColor)
     }
 
     @Test fun savingPersistsSettingsAndRestartsOnce() {
@@ -717,7 +717,7 @@ class CarPlayHostSettingsTest {
         assertEquals(0, field("restartGeneration"))
     }
 
-    // Galaxy Note20 in portrait: the menu said "1080 x 2249 -> 1080 x 2250" while DiPlay asked for 1080x2248.
+    // Galaxy Note20 in portrait: the menu said "1080 x 2249 -> 1080 x 2250" while xPlay asked for 1080x2248.
     @Test fun theDisplaySummaryNamesTheSizeThatIsRequested() {
         setField("activeDisplaySize", displaySize(1080, 2249))
         invoke("openSettingsMenu")

@@ -23,7 +23,7 @@ class WheelKeyPermissionSetupTest {
     private var allow = true
 
     @Before fun setup() {
-        context.getSharedPreferences("diplay_navigation_wheel", android.content.Context.MODE_PRIVATE).edit().clear().commit()
+        context.getSharedPreferences("xplay_navigation_wheel", android.content.Context.MODE_PRIVATE).edit().clear().commit()
         WheelZoomSettings.setEnabled(context, false)
         WheelZoomSettings.setJoystick(context, false)
         Settings.Secure.putString(context.contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES, other)
@@ -118,7 +118,7 @@ class WheelKeyPermissionSetupTest {
     }
 
     @Test fun navigationOnlyRestorationRequiresRecordedAuthorizationAndStopsWhenDisabled() {
-        val prefs = context.getSharedPreferences("diplay_navigation_wheel", android.content.Context.MODE_PRIVATE)
+        val prefs = context.getSharedPreferences("xplay_navigation_wheel", android.content.Context.MODE_PRIVATE)
         assertFalse(NavigationWheelSettings.enabled(context))
         prefs.edit().putBoolean("enabled", true).commit()
         assertFalse(WheelKeyService.needsRestore(context))

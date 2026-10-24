@@ -17,10 +17,10 @@ import androidx.annotation.RequiresApi
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
-private const val TAG = "DiPlay-PhoneAudio"
-private const val ACCOUNT_ID = "diplay-car-phone-audio"
-private const val ACCOUNT_LABEL = "DiPlay call audio"
-private const val ADDRESS = "carplay@diplay"
+private const val TAG = "xPlay-PhoneAudio"
+private const val ACCOUNT_ID = "xplay-car-phone-audio"
+private const val ACCOUNT_LABEL = "xPlay call audio"
+private const val ADDRESS = "carplay@xplay"
 private const val START_TIMEOUT_MILLIS = 3_000L
 
 /** Places the self-managed call through Telecom and waits until the system has accepted it. */
@@ -64,7 +64,7 @@ internal class TelecomPhoneAudioBackend(private val context: Context) : PhoneAud
     override fun isActive(): Boolean = PhoneAudioCall.isActive()
 }
 
-/** The one Telecom connection DiPlay keeps open, shared between the backend and [PhoneAudioConnectionService]. */
+/** The one Telecom connection xPlay keeps open, shared between the backend and [PhoneAudioConnectionService]. */
 internal object PhoneAudioCall {
     private val lock = Any()
     private var created: CountDownLatch? = null

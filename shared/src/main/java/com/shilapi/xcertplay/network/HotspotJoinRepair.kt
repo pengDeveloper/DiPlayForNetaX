@@ -57,7 +57,7 @@ class HotspotJoinRepair {
                         it.shell(command(application.packageCodePath, application.packageName, "cancel", operation, null))
                 }
             }
-        }, "diplay-hotspot-cancel").apply { isDaemon = true; start() }
+        }, "xplay-hotspot-cancel").apply { isDaemon = true; start() }
     }
 
     companion object {

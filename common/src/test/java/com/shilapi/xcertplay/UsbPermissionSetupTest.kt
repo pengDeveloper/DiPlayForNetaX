@@ -145,21 +145,21 @@ class UsbPermissionSetupTest {
     }
 
     @Test fun activityStopCancelsWorkerAndSuppressesLateDialogs() = cancelledUiAttempt { _, activity ->
-        DiPlayActivity::class.java.getDeclaredMethod("onStop").apply { isAccessible = true }.invoke(activity)
+        xPlayActivity::class.java.getDeclaredMethod("onStop").apply { isAccessible = true }.invoke(activity)
     }
 
     @Test fun activityDestroyCancelsWorkerAndSuppressesLateDialogs() = cancelledUiAttempt { _, activity ->
-        DiPlayActivity::class.java.getDeclaredMethod("onDestroy").apply { isAccessible = true }.invoke(activity)
+        xPlayActivity::class.java.getDeclaredMethod("onDestroy").apply { isAccessible = true }.invoke(activity)
     }
 
     private fun cancelledUiAttempt(cancel: (AlertDialog) -> Unit) = cancelledUiAttempt { dialog, _ -> cancel(dialog) }
 
-    private fun cancelledUiAttempt(cancel: (AlertDialog, DiPlayActivity) -> Unit) {
-        val activity = Robolectric.buildActivity(DiPlayActivity::class.java).get()
+    private fun cancelledUiAttempt(cancel: (AlertDialog, xPlayActivity) -> Unit) {
+        val activity = Robolectric.buildActivity(xPlayActivity::class.java).get()
         activity.setTheme(android.R.style.Theme_Material_NoActionBar)
         val client = FakeClient().apply { block = true }
         activity.usbPermissionOperationFactory = { operation(client) }
-        DiPlayActivity::class.java.getDeclaredMethod("autoApplyPermissions").apply { isAccessible = true }.invoke(activity)
+        xPlayActivity::class.java.getDeclaredMethod("autoApplyPermissions").apply { isAccessible = true }.invoke(activity)
         val progress = ShadowAlertDialog.getLatestAlertDialog()
         try {
             assertTrue(client.entered.await(3, TimeUnit.SECONDS))

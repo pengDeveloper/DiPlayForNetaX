@@ -8,7 +8,7 @@ class ClusterProjectionWatchdogTest {
     private val watchdog = ClusterProjectionWatchdog()
 
     @Test fun aProjectionThatStaysOnIsNeverTouched() {
-        // The stock map owns the switch while it shows on the cluster; DiPlay must not fight it.
+        // The stock map owns the switch while it shows on the cluster; xPlay must not fight it.
         repeat(10) { assertFalse(watchdog.onStatus(true)) }
     }
 
@@ -56,7 +56,7 @@ class ClusterProjectionWatchdogTest {
         assertTrue("the stock map owning the cluster is indistinguishable from ours", watchdog.holdsProjection)
 
         assertFalse(watchdog.onStatus(false))
-        assertFalse("the switch left DiPlay's hands", watchdog.holdsProjection)
+        assertFalse("the switch left xPlay's hands", watchdog.holdsProjection)
     }
 
     @Test fun aReAssertClaimsTheProjectionAgain() {
@@ -75,7 +75,7 @@ class ClusterProjectionWatchdogTest {
     }
 
     @Test fun theMeasuredMapTakeoverLeavesTheProjectionToTheMap() {
-        // Measured on the car: the wheel key closes the switch, DiPlay re-asserts, the head unit
+        // Measured on the car: the wheel key closes the switch, xPlay re-asserts, the head unit
         // closes it again while it assembles the map and the map opens its own projection last.
         watchdog.assertedProjection()
         listOf(false, false, false, true).forEach { watchdog.onStatus(it) }
@@ -84,10 +84,10 @@ class ClusterProjectionWatchdogTest {
 
     @Test fun theSwitchIsHandedBackOnlyWhileDiplaysOwnProjectionIsUp() {
         watchdog.assertedProjection()
-        assertTrue("DiPlay's own projection goes back to the head unit", watchdog.shouldHandBack(true))
+        assertTrue("xPlay's own projection goes back to the head unit", watchdog.shouldHandBack(true))
 
         // The closed switch was the last evidence, so the on reading now is the stock map's
-        // projection, not DiPlay's.
+        // projection, not xPlay's.
         assertFalse(watchdog.onStatus(false))
         assertFalse("a projection the stock map took over stays untouched", watchdog.shouldHandBack(true))
 

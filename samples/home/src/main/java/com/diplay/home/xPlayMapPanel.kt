@@ -1,4 +1,4 @@
-package com.diplay.home
+package com.xplay.home
 
 import android.content.ComponentName
 import android.content.Context
@@ -20,11 +20,11 @@ import android.widget.FrameLayout
 import android.widget.TextView
 
 /**
- * The live CarPlay map from DiPlay, embedded with DiPlay's map service (see DiPlay's
+ * The live CarPlay map from xPlay, embedded with xPlay's map service (see xPlay's
  * docs/LAUNCHER_INTEGRATION.md). Call [start] and [stop] with the screen. A tap on the map opens
- * CarPlay (DiPlay handles it); while there is no map, a tap opens DiPlay.
+ * CarPlay (xPlay handles it); while there is no map, a tap opens xPlay.
  */
-class DiPlayMapPanel(context: Context) : FrameLayout(context) {
+class xPlayMapPanel(context: Context) : FrameLayout(context) {
     private val map = SurfaceView(context)
     private val status = TextView(context).apply {
         setTextColor(Color.WHITE)
@@ -37,8 +37,8 @@ class DiPlayMapPanel(context: Context) : FrameLayout(context) {
     private var surfaceReady = false
     private var attached = false
 
-    /** DiPlay's package, once found; null when DiPlay is not installed. */
-    var diPlayPackage: String? = null
+    /** xPlay's package, once found; null when xPlay is not installed. */
+    var xPlayPackage: String? = null
         private set
 
     private val replies = Messenger(Handler(Looper.getMainLooper()) { message -> onReply(message); true })
@@ -60,7 +60,7 @@ class DiPlayMapPanel(context: Context) : FrameLayout(context) {
         setBackgroundColor(Color.BLACK)
         addView(map, LayoutParams(-1, -1))
         addView(status, LayoutParams(-1, -1))
-        status.setOnClickListener { openDiPlay() }
+        status.setOnClickListener { openxPlay() }
         map.holder.addCallback(object : SurfaceHolder.Callback {
             override fun surfaceCreated(holder: SurfaceHolder) {
                 surfaceReady = true
@@ -81,7 +81,7 @@ class DiPlayMapPanel(context: Context) : FrameLayout(context) {
     fun start() {
         val intent = Intent(ACTION)
         val info = context.packageManager.queryIntentServices(intent, 0).firstOrNull()?.serviceInfo
-        diPlayPackage = info?.packageName
+        xPlayPackage = info?.packageName
         if (info == null) {
             show(context.getString(R.string.home_map_not_installed))
             return
@@ -99,15 +99,15 @@ class DiPlayMapPanel(context: Context) : FrameLayout(context) {
         service = null
     }
 
-    /** Opens CarPlay in DiPlay, or DiPlay itself when that fails. */
+    /** Opens CarPlay in xPlay, or xPlay itself when that fails. */
     fun openCarPlay() {
-        val pkg = diPlayPackage ?: return
+        val pkg = xPlayPackage ?: return
         val carPlay = Intent().setClassName(pkg, CARPLAY_ACTIVITY).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        if (runCatching { context.startActivity(carPlay) }.isFailure) openDiPlay()
+        if (runCatching { context.startActivity(carPlay) }.isFailure) openxPlay()
     }
 
-    private fun openDiPlay() {
-        val pkg = diPlayPackage ?: return
+    private fun openxPlay() {
+        val pkg = xPlayPackage ?: return
         context.packageManager.getLaunchIntentForPackage(pkg)?.let { context.startActivity(it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }
     }
 
@@ -130,7 +130,7 @@ class DiPlayMapPanel(context: Context) : FrameLayout(context) {
                     ?: return show(context.getString(R.string.home_map_missing))
                 map.setChildSurfacePackage(surfacePackage)
                 attached = true
-                // DiPlay draws its own "waiting" text until the map streams.
+                // xPlay draws its own "waiting" text until the map streams.
                 status.visibility = GONE
             }
             MSG_ERROR -> {
@@ -165,8 +165,8 @@ class DiPlayMapPanel(context: Context) : FrameLayout(context) {
 
     private companion object {
         const val CARPLAY_ACTIVITY = "com.shilapi.xcertplay.CarPlayHostActivity"
-        // DiPlay's map protocol.
-        const val ACTION = "com.shihab.diplay.action.EMBED_MAP"
+        // xPlay's map protocol.
+        const val ACTION = "com.xbutler.xplay.action.EMBED_MAP"
         const val MSG_ATTACH = 1
         const val MSG_RESIZE = 2
         const val MSG_DETACH = 3

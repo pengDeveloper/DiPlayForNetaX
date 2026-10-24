@@ -2,7 +2,7 @@
 
 On BYD Android 12L (SDK 32), **Advanced → Advanced media → Hide BYD call popup**
 is an opt-in setting, off by default. It needs classic local ADB at
-`127.0.0.1:5555` and approval of DiPlay's existing ADB key. Use the existing
+`127.0.0.1:5555` and approval of xPlay's existing ADB key. Use the existing
 **Check ADB access** action to approve it; the background guard never opens an
 authorization prompt while driving.
 
@@ -18,7 +18,7 @@ The package shares the system UID on tested DiLink firmware. The helper therefor
 uses package-level `setMode`, never UID-wide `setUidMode`. An already ignored
 popup is left alone; a later external mode change is not overwritten on release.
 Only one helper can own the lease. Sequenced heartbeats expire after ten seconds
-and restore the mode if DiPlay crashes or loses ADB. Restoration is checked and
+and restore the mode if xPlay crashes or loses ADB. Restoration is checked and
 retried four times; a lost acknowledgement is not reported as confirmed recovery.
 
 The popup hide/restore commands were manually confirmed on a DiLink 5.0 Android

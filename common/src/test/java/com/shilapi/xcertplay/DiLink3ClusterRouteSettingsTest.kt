@@ -26,12 +26,12 @@ import org.robolectric.util.ReflectionHelpers
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [29], qualifiers = "en", manifest = Config.NONE)
 class DiLink3ClusterRouteSettingsTest {
-    private lateinit var controller: ActivityController<DiPlayActivity>
-    private lateinit var activity: DiPlayActivity
+    private lateinit var controller: ActivityController<xPlayActivity>
+    private lateinit var activity: xPlayActivity
     private lateinit var page: LinearLayout
 
     @Before fun setUp() {
-        controller = Robolectric.buildActivity(DiPlayActivity::class.java)
+        controller = Robolectric.buildActivity(xPlayActivity::class.java)
         activity = controller.get()
         activity.setTheme(android.R.style.Theme_Material_NoActionBar)
         activity.getSharedPreferences("xcertplay_airplay", 0).edit().clear().commit()

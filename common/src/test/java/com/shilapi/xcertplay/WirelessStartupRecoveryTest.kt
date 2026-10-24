@@ -210,8 +210,8 @@ class WirelessStartupRecoveryTest {
     @Test fun anIphoneThatDoesNotConnectInTimeIsNamedAndTheStopIsSaid() =
         assertNamedUntilRetriesStop(failure, R.string.first_tcp_timeout)
 
-    // Nothing is retried for a car hotspot DiPlay cannot use, so the screen does not say "Retrying…".
-    @Test fun aHotspotDiPlayCannotUseSaysTheRetriesStopped() {
+    // Nothing is retried for a car hotspot xPlay cannot use, so the screen does not say "Retrying…".
+    @Test fun aHotspotxPlayCannotUseSaysTheRetriesStopped() {
         val stage = TextView(activity)
         ReflectionHelpers.setField(activity, "stageStatusView", stage)
         listOf("The car hotspot is off. Turn it on in the car settings and connect again.",

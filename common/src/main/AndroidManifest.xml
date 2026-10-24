@@ -12,7 +12,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <!-- Optional: diagnostic reports in the visible Downloads/DiPlay folder on Android 9.
+    <!-- Optional: diagnostic reports in the visible Downloads/xPlay folder on Android 9.
          Android 10+ needs no permission for this, so it is never requested there. -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
     <!-- Optional: the dashboard map as a card over the home screen. -->
@@ -58,7 +58,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/update_apk_paths" />
         </provider>
-        <activity android:name="com.shilapi.xcertplay.DiPlayActivity"
+        <activity android:name="com.shilapi.xcertplay.xPlayActivity"
             android:exported="true" android:launchMode="singleTop"
             android:resizeableActivity="true"
             android:configChanges="density|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
@@ -68,7 +68,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name="com.shilapi.xcertplay.DiPlaySessionService"
+        <service android:name="com.shilapi.xcertplay.xPlaySessionService"
             android:exported="false" android:foregroundServiceType="connectedDevice|microphone|location" />
 
         <activity
@@ -140,7 +140,7 @@
             android:exported="true"
             tools:ignore="ExportedService">
             <intent-filter>
-                <action android:name="com.shihab.diplay.action.EMBED_MAP" />
+                <action android:name="com.xbutler.xplay.action.EMBED_MAP" />
             </intent-filter>
         </service>
 

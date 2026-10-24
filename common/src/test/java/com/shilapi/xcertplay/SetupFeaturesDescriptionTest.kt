@@ -25,7 +25,7 @@ import org.robolectric.util.ReflectionHelpers
 @Config(sdk = [29], qualifiers = "en-w1000dp-h700dp-land")
 class SetupFeaturesDescriptionTest {
     private val context: Context = RuntimeEnvironment.getApplication()
-    private val opened = mutableListOf<DiPlayActivity>()
+    private val opened = mutableListOf<xPlayActivity>()
 
     @Before fun setUp() = clearSettings()
 
@@ -36,20 +36,20 @@ class SetupFeaturesDescriptionTest {
     }
 
     private fun clearSettings() {
-        context.getSharedPreferences("diplay", 0).edit().clear().commit()
+        context.getSharedPreferences("xplay", 0).edit().clear().commit()
         context.getSharedPreferences("xcertplay_airplay", 0).edit().clear().commit()
     }
 
-    private fun featuresStep(): DiPlayActivity = Robolectric.buildActivity(
-        DiPlayActivity::class.java,
-        Intent(context, DiPlayActivity::class.java).putExtra("page", "setup"),
+    private fun featuresStep(): xPlayActivity = Robolectric.buildActivity(
+        xPlayActivity::class.java,
+        Intent(context, xPlayActivity::class.java).putExtra("page", "setup"),
     ).setup().get().also {
         opened += it
         ReflectionHelpers.setField(it, "setupStep", SetupGuide.STEP_FEATURES)
         ReflectionHelpers.callInstanceMethod<Unit>(it, "render")
     }
 
-    private fun texts(screen: DiPlayActivity): List<String> =
+    private fun texts(screen: xPlayActivity): List<String> =
         descendants(screen.window.decorView).filterIsInstance<TextView>().map { it.text.toString() }.toList()
 
     private fun descendants(view: View): Sequence<View> = sequence {

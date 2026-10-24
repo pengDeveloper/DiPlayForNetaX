@@ -17,7 +17,7 @@ class CarHotspotOffReportTest {
     private val context: Context = RuntimeEnvironment.getApplication()
 
     @Before @After fun clear() {
-        context.getSharedPreferences("diplay_car_hotspot", 0).edit().clear().commit()
+        context.getSharedPreferences("xplay_car_hotspot", 0).edit().clear().commit()
     }
 
     @Test fun anOffReportCountsUntilTheDriverConnectsAnyway() {

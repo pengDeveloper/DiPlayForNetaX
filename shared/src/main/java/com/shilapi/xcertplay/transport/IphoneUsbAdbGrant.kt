@@ -87,7 +87,7 @@ internal object IphoneUsbAdbGrant {
 
 /**
  * Runs under an already-approved adb shell UID. It grants only attached devices with the exact
- * requested Apple VID/PID to the installed DiPlay package and prints no device identifiers.
+ * requested Apple VID/PID to the installed xPlay package and prints no device identifiers.
  */
 object IphoneUsbGrantTool {
     private const val ROOT_UID = 0
@@ -95,7 +95,7 @@ object IphoneUsbGrantTool {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        Thread({ Thread.sleep(12_000); exitProcess(2) }, "diplay-usb-grant-deadline")
+        Thread({ Thread.sleep(12_000); exitProcess(2) }, "xplay-usb-grant-deadline")
             .apply { isDaemon = true; start() }
         val result = try {
             execute(args)

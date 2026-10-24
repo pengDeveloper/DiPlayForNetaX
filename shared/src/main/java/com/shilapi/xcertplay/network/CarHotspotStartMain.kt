@@ -21,7 +21,7 @@ import kotlin.system.exitProcess
  * longer start tethering itself ("No field mService" on Android 10, "NoSuchMethodException … startTethering" on 12,
  * #616), while the shell may, and holds the tethering permission it checks. Starts Wi-Fi tethering with the car's
  * saved hotspot configuration, never a new one; the opted-in "apconfig" subcommand is the one
- * exception, keeping the car's saved configuration and rewriting only DiPlay's passphrase (and a
+ * exception, keeping the car's saved configuration and rewriting only xPlay's passphrase (and a
  * 5 GHz request) on Android 11+ (see CarHotspotConfigWrite), and
  * prints only the protocol line. Android 7.0–10 call
  * IConnectivityManager; Android 11 moved tethering to TetheringManager.
@@ -67,7 +67,7 @@ object CarHotspotStartMain {
         .getMethod("getService", String::class.java).invoke(null, name) as? IBinder
 
     /**
-     * The shell rewrites only what the car's saved configuration lacks: DiPlay's passphrase (and a 5 GHz request), on top
+     * The shell rewrites only what the car's saved configuration lacks: xPlay's passphrase (and a 5 GHz request), on top
      * of [Builder(current)]; the passphrase arrives on stdin so it never appears in the process list.
      */
     private fun apConfig(args: Array<String>): String {
@@ -90,7 +90,7 @@ object CarHotspotStartMain {
         val effective = saved?.takeIf { it.isNotEmpty() } ?: ssid
         builderType.getMethod("setSsid", String::class.java).invoke(builder, effective)
         val security = current?.javaClass?.methods?.firstOrNull { it.name == "getSecurityType" }?.invoke(current) as? Int
-        // An open hotspot from DiPlay must not strip the car's saved password; if the car's security
+        // An open hotspot from xPlay must not strip the car's saved password; if the car's security
         // type cannot be read, refusing the empty passphrase is the safe choice.
         if (passphrase.isEmpty() && current != null &&
             security != staticInt(configuration, "SECURITY_TYPE_OPEN")) return "error open"
@@ -208,7 +208,7 @@ object CarHotspotStartMain {
                 "onTetheringFailed" -> { result.set(args?.firstOrNull() as? Int ?: -1); null }
                 "hashCode" -> System.identityHashCode(proxy)
                 "equals" -> proxy === args?.firstOrNull()
-                "toString" -> "DiPlayStartTetheringCallback"
+                "toString" -> "xPlayStartTetheringCallback"
                 else -> null
             }
         }

@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Instructions for coding agents that work on DiPlay.
+Instructions for coding agents that work on xPlay.
 
 ## Checks
 
@@ -18,7 +18,7 @@ Set `ANDROID_HOME` or `local.properties` if Gradle cannot find the SDK.
 
 The Settings screen is grouped by driver goal, not by implementation.
 `SettingsCategory`, `SettingsSection` and `SettingsInformationArchitecture` at the top of
-`common/src/main/java/com/shilapi/xcertplay/DiPlayActivity.kt` define the groups.
+`common/src/main/java/com/shilapi/xcertplay/xPlayActivity.kt` define the groups.
 `SettingsLayoutPolicyTest` fails when a section has no category or has more than one.
 
 ### Choose the category
@@ -27,7 +27,7 @@ Ask which goal the driver has when they look for the setting. Use the first row 
 
 | Category | Put a setting here when it controls… | Examples |
 | --- | --- | --- |
-| Connection | how the iPhone connects and how DiPlay starts | connection setup, connect on open, start with the car, USB permissions, car hotspot automation, iPhone choice, Android permissions |
+| Connection | how the iPhone connects and how xPlay starts | connection setup, connect on open, start with the car, USB permissions, car hotspot automation, iPhone choice, Android permissions |
 | Display | how CarPlay looks on the head-unit screen | day/night mode, picture, size, resolution, frame rate, dock, system bars, multi-window resolution |
 | Audio | what the driver hears | media and navigation streams, music buffer |
 | Navigation | location and turn-by-turn guidance | location to iPhone, BYD HUD and cluster guidance |

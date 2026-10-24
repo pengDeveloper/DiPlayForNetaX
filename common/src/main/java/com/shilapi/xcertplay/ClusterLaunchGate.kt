@@ -1,10 +1,10 @@
 package com.shilapi.xcertplay
 
 /**
- * Orders the DiLink 4 ADB cluster launch after DiPlay's own window (#536).
+ * Orders the DiLink 4 ADB cluster launch after xPlay's own window (#536).
  *
  * Starting an activity on the cluster display moves input focus there. On Android 10 a window hides its
- * system bars only once it has focus, so a launch before DiPlay's first focus left the bars on screen:
+ * system bars only once it has focus, so a launch before xPlay's first focus left the bars on screen:
  * CarPlay started at the smaller size, and the next tap on the head unit returned focus, grew the window
  * and restarted CarPlay. The launch now waits for that focus, or for the host to leave the screen, and
  * CarPlay waits for the launch so that its first session already carries the cluster stream.

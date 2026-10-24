@@ -10,13 +10,13 @@ import com.shilapi.xcertplay.telecom.PhoneAudioRoute
 class BootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action != Intent.ACTION_BOOT_COMPLETED) return
-        // Starts the watcher for other apps' calls when that setting is on, even without opening DiPlay.
+        // Starts the watcher for other apps' calls when that setting is on, even without opening xPlay.
         PhoneAudioRoute.attach(context)
         val launchEnabled = AirPlayPersistence.loadAutoStartOnBoot(context)
         StartupDiagnosticSnapshot.received(context, launchEnabled)
         if (!launchEnabled) return
 
-        val launch = Intent(context, DiPlayActivity::class.java).apply {
+        val launch = Intent(context, xPlayActivity::class.java).apply {
             addFlags(
                 Intent.FLAG_ACTIVITY_NEW_TASK or
                     Intent.FLAG_ACTIVITY_CLEAR_TOP or
@@ -28,7 +28,7 @@ class BootReceiver : BroadcastReceiver() {
             StartupDiagnosticSnapshot.launchResult(context)
         } catch (error: RuntimeException) {
             StartupDiagnosticSnapshot.launchResult(context, error)
-            Log.w(TAG, "Boot auto-start could not launch DiPlayActivity", error)
+            Log.w(TAG, "Boot auto-start could not launch xPlayActivity", error)
         }
     }
 

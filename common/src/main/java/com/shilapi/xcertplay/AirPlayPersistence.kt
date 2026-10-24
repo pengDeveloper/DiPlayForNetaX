@@ -88,7 +88,7 @@ object AirPlayPersistence {
     private const val KEY_CLUSTER_MAP = "cluster_map_enabled"
 
     /**
-     * The Geely cluster projection switch is DiPlay's right now. The switch belongs to the head unit
+     * The Geely cluster projection switch is xPlay's right now. The switch belongs to the head unit
      * and carries no owner, and the process can be killed without running `onStop`, so the claim is
      * kept on disk and handed back by the next run ([GeelyClusterProjection.releaseStale]).
      */
@@ -139,8 +139,8 @@ object AirPlayPersistence {
     private const val SAFE_AREA_KEY_PREFIX = "safe_area_"
     private const val CUSTOM_ICON_FILE = "airplay-icon.png"
 
-    const val DEFAULT_MANUFACTURER = "DiPlay"
-    const val DEFAULT_MODEL = "DiPlay"
+    const val DEFAULT_MANUFACTURER = "xPlay"
+    const val DEFAULT_MODEL = "xPlay"
     const val DEFAULT_OEM_LABEL = "BYD"
     const val DEFAULT_MFI_I2C_PATH = "/dev/i2c-1"
 
@@ -264,7 +264,7 @@ object AirPlayPersistence {
             .apply()
     }
 
-    /** Opt-out for head units that route physical volume buttons to DiPlay's focus owner. */
+    /** Opt-out for head units that route physical volume buttons to xPlay's focus owner. */
     fun loadDisableMediaKeyAudioFocus(context: Context): Boolean =
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
             .getBoolean(KEY_DISABLE_MEDIA_KEY_AUDIO_FOCUS, false)
@@ -757,7 +757,7 @@ object AirPlayPersistence {
         }
     }
 
-    /** DiPlay's own experimental echo canceller on CarPlay call audio; opt-in, applies at reconnect. */
+    /** xPlay's own experimental echo canceller on CarPlay call audio; opt-in, applies at reconnect. */
     fun loadCallEchoCancellation(context: Context): Boolean =
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getBoolean(KEY_CALL_ECHO_CANCELLATION, false)
 
@@ -872,7 +872,7 @@ object AirPlayPersistence {
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putBoolean(KEY_CLUSTER_PROJECTION_HELD, held).apply()
     }
 
-    /** The dashboard map as a card on the centre screen while DiPlay is in the background. */
+    /** The dashboard map as a card on the centre screen while xPlay is in the background. */
     fun loadCenterMapOverlay(context: Context): Boolean =
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getBoolean(KEY_CENTER_MAP_OVERLAY, false)
 

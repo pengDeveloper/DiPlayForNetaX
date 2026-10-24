@@ -4,7 +4,7 @@ import java.lang.reflect.Modifier
 
 /**
  * One-shot entry point launched under the head unit's shell uid with `app_process`. It reflects
- * only the six read fields DiPlay needs and their device ids, then exits. It performs no Binder
+ * only the six read fields xPlay needs and their device ids, then exits. It performs no Binder
  * writes and does not register a persistent service.
  */
 object Byd13CatalogProbeMain {

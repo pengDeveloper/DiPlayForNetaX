@@ -25,20 +25,20 @@ import org.robolectric.util.ReflectionHelpers
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [29], qualifiers = "en", manifest = Config.NONE)
 class BydSettingsReconnectTest {
-    private lateinit var activity: DiPlayActivity
+    private lateinit var activity: xPlayActivity
     private lateinit var backend: DeferredBackend
     private var reconnects = 0
 
     @Before fun setUp() {
         val app = RuntimeEnvironment.getApplication()
-        for (name in listOf("diplay_byd_outputs", "diplay_byd_vehicle_fields", "diplay_car_hotspot", "xcertplay_airplay", "diplay")) {
+        for (name in listOf("xplay_byd_outputs", "xplay_byd_vehicle_fields", "xplay_car_hotspot", "xcertplay_airplay", "xplay")) {
             app.getSharedPreferences(name, 0).edit().clear().commit()
         }
         BydVehicleFieldStore.clearMemoryForTests()
         CarPlayBackgroundSession.clear()
         backend = DeferredBackend()
         BydVehicleSettingsBackendProvider.current = backend
-        activity = Robolectric.buildActivity(DiPlayActivity::class.java).get()
+        activity = Robolectric.buildActivity(xPlayActivity::class.java).get()
         activity.setTheme(android.R.style.Theme_Material_NoActionBar)
         ReflectionHelpers.setField(activity, "page", "settings")
         ReflectionHelpers.setField(activity, "bydVehicleAdvancedExpanded", true)

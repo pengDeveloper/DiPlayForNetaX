@@ -10,15 +10,15 @@ import android.graphics.drawable.StateListDrawable
 import android.widget.Button
 import androidx.core.graphics.ColorUtils
 
-internal enum class DiPlayButtonKind { PRIMARY, SECONDARY, DANGER, TONAL_DANGER }
+internal enum class xPlayButtonKind { PRIMARY, SECONDARY, DANGER, TONAL_DANGER }
 
 /**
- * Button for views built in code outside `DiPlayActivity`, whose own `button()` stays private.
- * The corner radius follows the control height, as in `DiPlayActivity.buttonShape`.
+ * Button for views built in code outside `xPlayActivity`, whose own `button()` stays private.
+ * The corner radius follows the control height, as in `xPlayActivity.buttonShape`.
  */
-internal class DiPlayButton(context: Context) : Button(context) {
-    private var kind = DiPlayButtonKind.SECONDARY
-    private var palette: DiPlayPalette? = null
+internal class xPlayButton(context: Context) : Button(context) {
+    private var kind = xPlayButtonKind.SECONDARY
+    private var palette: xPlayPalette? = null
     private var overlay = false
 
     init {
@@ -28,7 +28,7 @@ internal class DiPlayButton(context: Context) : Button(context) {
     }
 
     /** [overlay] picks the in-car menu colours instead of the app chrome colours. */
-    fun style(kind: DiPlayButtonKind, palette: DiPlayPalette, overlay: Boolean) {
+    fun style(kind: xPlayButtonKind, palette: xPlayPalette, overlay: Boolean) {
         this.kind = kind
         this.palette = palette
         this.overlay = overlay
@@ -47,22 +47,22 @@ internal class DiPlayButton(context: Context) : Button(context) {
         val text: Int
         val stroke: Int
         when (kind) {
-            DiPlayButtonKind.PRIMARY -> {
+            xPlayButtonKind.PRIMARY -> {
                 fill = if (overlay) palette.overlayAccent else palette.accent
                 text = if (overlay) palette.overlayOnAccent else palette.onAccent
                 stroke = fill
             }
-            DiPlayButtonKind.SECONDARY -> {
+            xPlayButtonKind.SECONDARY -> {
                 fill = if (overlay) palette.overlayTrackOff else palette.button
                 text = if (overlay) palette.overlayPrimaryText else palette.primaryText
                 stroke = if (overlay) fill else palette.outline
             }
-            DiPlayButtonKind.DANGER -> {
+            xPlayButtonKind.DANGER -> {
                 fill = palette.overlayDanger
                 text = Color.WHITE
                 stroke = fill
             }
-            DiPlayButtonKind.TONAL_DANGER -> {
+            xPlayButtonKind.TONAL_DANGER -> {
                 val surface = if (overlay) palette.overlayBackground else palette.surface
                 fill = ColorUtils.blendARGB(surface, palette.overlayDanger, 0.16f)
                 text = if (ColorUtils.calculateLuminance(surface) < 0.5)

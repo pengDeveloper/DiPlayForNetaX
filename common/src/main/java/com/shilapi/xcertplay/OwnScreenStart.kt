@@ -5,15 +5,15 @@ import android.content.Intent
 import android.util.Log
 
 /**
- * Opens one of DiPlay's own screens from [Activity.startActivity] without letting a refusal close DiPlay.
+ * Opens one of xPlay's own screens from [Activity.startActivity] without letting a refusal close xPlay.
  *
  * Inside BYD's DiYou launcher card (DiLink 5, #463) Android refused such a start with IllegalArgumentException
  * "There is no running activity in rootTask" for the CarPlay screen's own task (taskAffinity `.carplay`, since
- * 0.2.12), and the uncaught exception closed DiPlay every time it opened in the card. The start is retried once
- * from the application context in a task of its own; a second refusal is logged and DiPlay stays open.
+ * 0.2.12), and the uncaught exception closed xPlay every time it opened in the card. The start is retried once
+ * from the application context in a task of its own; a second refusal is logged and xPlay stays open.
  */
 internal object OwnScreenStart {
-    private const val TAG = "DiPlay"
+    private const val TAG = "xPlay"
 
     fun start(activity: Activity, intent: Intent, log: (String) -> Unit = { Log.w(TAG, it) }): Boolean {
         val screen = intent.component?.className?.substringAfterLast('.') ?: "screen"

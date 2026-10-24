@@ -293,7 +293,7 @@ class CarPlayController(
     @Volatile private var wirelessAlternateAddress: InetAddress? = null
     @Volatile private var wirelessAddressRecovery: HotspotAddressRecovery? = null
     private val startupTimer = java.util.concurrent.ScheduledThreadPoolExecutor(1) { task ->
-        Thread(task, "diplay-first-tcp-timeout").apply { isDaemon = true }
+        Thread(task, "xplay-first-tcp-timeout").apply { isDaemon = true }
     }.apply { removeOnCancelPolicy = true }
     @Volatile private var wirelessDiagnostics: WirelessStartupDiagnostics? = null
     @Volatile private var bluetoothSocket: BluetoothSocket? = null
@@ -419,7 +419,7 @@ class CarPlayController(
         }
 
         // The user tapped the car icon in CarPlay: show the head unit's own menu, like its Home button.
-        // The session keeps running in the background, so returning to DiPlay resumes CarPlay.
+        // The session keeps running in the background, so returning to xPlay resumes CarPlay.
         override fun onHostUiRequested(session: AirPlaySession) {
             debugLog("CarPlay requested the car UI; opening the head-unit home screen")
             runCatching {
@@ -752,7 +752,7 @@ class CarPlayController(
                     if (closed || activeSession !== session || session.clusterStream != stream) {
                         return@synchronized false
                     }
-                    // A cluster stream DiPlay has not paused yet starts with the map drawn.
+                    // A cluster stream xPlay has not paused yet starts with the map drawn.
                     val shown = clusterUiShown || clusterUiStream != session to stream
                     val delivered = session.setClusterUrl(url, send = shown)
                     val sent = delivered && !closed && activeSession === session && session.clusterStream == stream
@@ -1279,7 +1279,7 @@ class CarPlayController(
                         flipWirelessAddressFamily(generation)
                         fail(WirelessStartupException(WirelessStartupFailure.FIRST_TCP_TIMEOUT,
                             "No AirPlay TCP after CarPlay StartSession"), generation)
-                        Thread({ closeWirelessStack(generation = generation) }, "diplay-startup-cleanup")
+                        Thread({ closeWirelessStack(generation = generation) }, "xplay-startup-cleanup")
                             .apply { isDaemon = true; start() }
                     }
                 },
@@ -1297,7 +1297,7 @@ class CarPlayController(
             BluetoothRadioCheck.blockerForState(
                 adapterPresent = activeAdapter != null,
                 state = activeAdapter?.state,
-                pausedByDiPlay = BydBluetoothSuspend.isSuspendedByUs(appContext),
+                pausedByxPlay = BydBluetoothSuspend.isSuspendedByUs(appContext),
             )?.let { throw BluetoothRadioCheck.failure(it) }
             val hotspotInfo = startWirelessHotspot(generation)
             if (isStaleWirelessRun(generation)) {
@@ -2540,7 +2540,7 @@ class CarPlayController(
         val bonded = adapter.bondedDevices.orEmpty()
         config.wirelessBluetoothDeviceAddress?.let { selected ->
             return bonded.firstOrNull { it.address.equals(selected, ignoreCase = true) }
-                ?: throw IOException("The selected iPhone is no longer paired. Choose it again in DiPlay.")
+                ?: throw IOException("The selected iPhone is no longer paired. Choose it again in xPlay.")
         }
         val iPhones = bonded.filter { device ->
             device.name?.contains("iPhone", ignoreCase = true) == true
@@ -2606,7 +2606,7 @@ class CarPlayController(
             if (isStaleWirelessRun(link.generation)) return@Thread
             fail(failure, link.generation)
             closeWirelessStack(generation = link.generation)
-        }, "diplay-bluetooth-link-check").apply { isDaemon = true; start() }
+        }, "xplay-bluetooth-link-check").apply { isDaemon = true; start() }
     }
 
     /**
@@ -3160,7 +3160,7 @@ class CarPlayController(
         private const val WIFI_P2P_START_TIMEOUT_MILLIS = 20_000L
         private const val PAIR_TIMEOUT_MILLIS = 5 * 60_000L
         private const val VPN_CONNECT_TIMEOUT_MILLIS = 10_000L
-        private const val WIRELESS_PREFS = "diplay_wireless"
+        private const val WIRELESS_PREFS = "xplay_wireless"
         private const val HOTSPOT_FAMILY_PREFERENCE_KEY = "hotspot_address_family"
         private const val CONTROL_LOOP_TIMEOUT_MILLIS = 5 * 60_000L
         private const val LOCATION_CONTROL_LOOP_TIMEOUT_MILLIS = 24 * 60 * 60 * 1_000L

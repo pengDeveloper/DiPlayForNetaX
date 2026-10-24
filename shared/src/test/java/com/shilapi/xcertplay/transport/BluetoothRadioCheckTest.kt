@@ -10,7 +10,7 @@ import org.junit.Test
 
 class BluetoothRadioCheckTest {
     @Test fun aRadioThatIsOnLetsTheAttemptGoOn() {
-        assertNull(BluetoothRadioCheck.blocker(adapterPresent = true, enabled = true, pausedByDiPlay = false))
+        assertNull(BluetoothRadioCheck.blocker(adapterPresent = true, enabled = true, pausedByxPlay = false))
     }
 
     // An Allwinner T8 head unit came up with Bluetooth off. A fork build that still offered the
@@ -19,20 +19,20 @@ class BluetoothRadioCheckTest {
     @Test fun aRadioThatIsOffStopsTheAttemptBeforeTheHotspot() {
         assertEquals(
             BluetoothRadioCheck.RADIO_OFF,
-            BluetoothRadioCheck.blocker(adapterPresent = true, enabled = false, pausedByDiPlay = false),
+            BluetoothRadioCheck.blocker(adapterPresent = true, enabled = false, pausedByxPlay = false),
         )
     }
 
     // The pause is undone before the handshake; stopping here would never let that happen.
-    @Test fun aRadioThatDiPlayPausedDoesNotStopTheAttempt() {
-        assertNull(BluetoothRadioCheck.blocker(adapterPresent = true, enabled = false, pausedByDiPlay = true))
+    @Test fun aRadioThatxPlayPausedDoesNotStopTheAttempt() {
+        assertNull(BluetoothRadioCheck.blocker(adapterPresent = true, enabled = false, pausedByxPlay = true))
     }
 
     @Test fun aHeadUnitWithoutAnAdapterStopsTheAttemptWhateverElseIsKnown() {
         for (paused in listOf(false, true)) {
             assertEquals(
                 BluetoothRadioCheck.NO_ADAPTER,
-                BluetoothRadioCheck.blocker(adapterPresent = false, enabled = false, pausedByDiPlay = paused),
+                BluetoothRadioCheck.blocker(adapterPresent = false, enabled = false, pausedByxPlay = paused),
             )
         }
     }
@@ -67,7 +67,7 @@ class BluetoothRadioCheckTest {
             BluetoothRadioCheck.blockerForState(
                 adapterPresent = true,
                 state = android.bluetooth.BluetoothAdapter.STATE_OFF,
-                pausedByDiPlay = false,
+                pausedByxPlay = false,
             ),
         )
 
@@ -77,23 +77,23 @@ class BluetoothRadioCheckTest {
             BluetoothRadioCheck.blockerForState(
                 adapterPresent = true,
                 state = android.bluetooth.BluetoothAdapter.STATE_TURNING_OFF,
-                pausedByDiPlay = false,
+                pausedByxPlay = false,
             ),
         )
 
-        // Bluetooth off or turning off when DiPlay itself paused it -> no blocker
+        // Bluetooth off or turning off when xPlay itself paused it -> no blocker
         assertNull(
             BluetoothRadioCheck.blockerForState(
                 adapterPresent = true,
                 state = android.bluetooth.BluetoothAdapter.STATE_OFF,
-                pausedByDiPlay = true,
+                pausedByxPlay = true,
             ),
         )
         assertNull(
             BluetoothRadioCheck.blockerForState(
                 adapterPresent = true,
                 state = android.bluetooth.BluetoothAdapter.STATE_TURNING_OFF,
-                pausedByDiPlay = true,
+                pausedByxPlay = true,
             ),
         )
 
@@ -102,7 +102,7 @@ class BluetoothRadioCheckTest {
             BluetoothRadioCheck.blockerForState(
                 adapterPresent = true,
                 state = android.bluetooth.BluetoothAdapter.STATE_TURNING_ON,
-                pausedByDiPlay = false,
+                pausedByxPlay = false,
             ),
         )
 
@@ -111,7 +111,7 @@ class BluetoothRadioCheckTest {
             BluetoothRadioCheck.blockerForState(
                 adapterPresent = true,
                 state = android.bluetooth.BluetoothAdapter.STATE_ON,
-                pausedByDiPlay = false,
+                pausedByxPlay = false,
             ),
         )
 
@@ -121,7 +121,7 @@ class BluetoothRadioCheckTest {
             BluetoothRadioCheck.blockerForState(
                 adapterPresent = false,
                 state = null,
-                pausedByDiPlay = false,
+                pausedByxPlay = false,
             ),
         )
         assertEquals(
@@ -129,7 +129,7 @@ class BluetoothRadioCheckTest {
             BluetoothRadioCheck.blockerForState(
                 adapterPresent = false,
                 state = null,
-                pausedByDiPlay = true,
+                pausedByxPlay = true,
             ),
         )
     }

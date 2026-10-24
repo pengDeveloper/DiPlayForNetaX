@@ -10,11 +10,11 @@ import java.util.concurrent.TimeUnit
 object BydOemClusterNavi {
     internal const val STOCK_MAP = "com.byd.automap"
     internal const val STOCK_MAP_CLUSTER_ACTIVITY = "$STOCK_MAP.extra.MeterActivity"
-    private const val TAG = "DiPlay-BYD-OemCluster"
+    private const val TAG = "xPlay-BYD-OemCluster"
     private const val JOURNAL = "restore_journal"
     private val shell = BydAdbShell(TAG)
     private val worker = Executors.newSingleThreadScheduledExecutor {
-        Thread(it, "diplay-oem-cluster").apply { isDaemon = true }
+        Thread(it, "xplay-oem-cluster").apply { isDaemon = true }
     }
     private var session: OemClusterHoldSession? = null
 
@@ -87,5 +87,5 @@ object BydOemClusterNavi {
         return "pm $operation --user 0 $component"
     }
 
-    private fun prefs(context: Context) = context.getSharedPreferences("diplay_oem_cluster", Context.MODE_PRIVATE)
+    private fun prefs(context: Context) = context.getSharedPreferences("xplay_oem_cluster", Context.MODE_PRIVATE)
 }
