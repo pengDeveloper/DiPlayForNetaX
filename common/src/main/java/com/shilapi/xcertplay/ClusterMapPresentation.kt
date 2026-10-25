@@ -74,7 +74,7 @@ internal class ClusterMapPresentation(
         // The adaptive DiLink 5.1 layout follows the cluster's own contrast; elsewhere the cluster follows xPlay's theme.
         val dark = if (plan != null) DiLink51ClusterLayout.dark(context, theme) else context.resolveAppNightNow()
         val backdrop = if (dark) Color.rgb(15, 22, 30) else Color.rgb(207, 218, 229)
-        val placeholder = if (dark) Color.BLACK else Color.rgb(233, 238, 246)
+        val placeholder = if (dark) Color.BLACK else xPlayPalette.LIGHT.background
         val root = FrameLayout(context).apply {
             setBackgroundColor(if (plan == null) placeholder else if (plan.fullMap) backdrop else Color.TRANSPARENT)
         }

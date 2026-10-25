@@ -137,6 +137,7 @@ class AdaptiveSettingsUiTest {
     }
 
     @Test fun headerShortcutTogglesAppearanceAndReturnsFocusToItself() {
+        AirPlayPersistence.saveAppAppearance(context, AppAppearance.DARK)
         val screen = openSettings()
         val switchToLight = screen.getString(R.string.settings_switch_to_light_appearance)
         val button = descendants(screen.window.decorView).single {
@@ -198,6 +199,7 @@ class AdaptiveSettingsUiTest {
     @Test
     @Config(sdk = [29], qualifiers = "en-w500dp-h400dp")
     fun appearanceRepaintKeepsTheCurrentSettingsPageAndScrollPosition() {
+        AirPlayPersistence.saveAppAppearance(context, AppAppearance.DARK)
         val screen = openSettings()
         descendants(screen.window.decorView).single {
             it.contentDescription == screen.getString(

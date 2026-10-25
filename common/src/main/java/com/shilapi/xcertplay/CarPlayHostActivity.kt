@@ -528,6 +528,12 @@ class CarPlayHostActivity : ComponentActivity() {
     private var sessionDock: CarPlayDock? = null
     private var hideTopBar = true
     private var hideBottomBar = true
+    /**
+     * True on the X管家 head unit, whose left 588 px column is the car's own climate bar rather than
+     * app space: this window then fits the system windows and never hides the bars (see
+     * [applyFullscreenMode]), so the CarPlay picture cannot cover the climate bar.
+     */
+    private var headUnitRightOfClimateBar = false
     private var temporarySystemBarsEnabled = false
     private var temporarySystemBarsVisible = false
     private val hideTemporarySystemBars = Runnable {
@@ -829,6 +835,10 @@ class CarPlayHostActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // xPlay for X管家: the head unit's left 588 px column is the car's own climate bar, delivered
+        // as a system ITYPE_CLIMATE_BAR inset; the projection must stay in the right-hand app area.
+        // [applyFullscreenMode] fits this window to the system windows and keeps the bars visible.
+        headUnitRightOfClimateBar = resources.getBoolean(R.bool.config_head_unit_right_of_climate_bar)
         val bluetoothState = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(bluetoothOnReceiver, bluetoothState, Context.RECEIVER_NOT_EXPORTED)
@@ -935,8 +945,11 @@ class CarPlayHostActivity : ComponentActivity() {
             maximumDetectedHeightPixels = height
         }
         rightHandDrive = AirPlayPersistence.loadRightHandDrive(this)
-        hideTopBar = AirPlayPersistence.loadHideTopBar(this)
-        hideBottomBar = AirPlayPersistence.loadHideBottomBar(this)
+        // The Display "hide the status/navigation bar" settings do not apply on the X管家 head unit:
+        // hiding a bar lets this window grow over the car's own climate bar. The window keeps the
+        // bars (see [applyFullscreenMode]), so the session records them as shown.
+        hideTopBar = AirPlayPersistence.loadHideTopBar(this) && !headUnitRightOfClimateBar
+        hideBottomBar = AirPlayPersistence.loadHideBottomBar(this) && !headUnitRightOfClimateBar
         temporarySystemBarsEnabled = AirPlayPersistence.loadTemporarySystemBars(this)
         harmanFullscreenEnabled = AirPlayPersistence.loadHarmanFullscreen(this)
         safeAreaDrawOutside = AirPlayPersistence.loadSafeAreaDrawOutside(this)
@@ -1240,8 +1253,9 @@ class CarPlayHostActivity : ComponentActivity() {
         mainHandler.post(refreshTurnOverlay)
         var systemBarsChanged = false
         if (!menuOpen) {
-            val savedHideTopBar = AirPlayPersistence.loadHideTopBar(this)
-            val savedHideBottomBar = AirPlayPersistence.loadHideBottomBar(this)
+            // Same rule as [loadPersistedSettings]: the X管家 head unit keeps its bars.
+            val savedHideTopBar = AirPlayPersistence.loadHideTopBar(this) && !headUnitRightOfClimateBar
+            val savedHideBottomBar = AirPlayPersistence.loadHideBottomBar(this) && !headUnitRightOfClimateBar
             val savedHarmanFullscreen = AirPlayPersistence.loadHarmanFullscreen(this)
             systemBarsChanged = hideTopBar != savedHideTopBar ||
                 hideBottomBar != savedHideBottomBar ||
@@ -1996,7 +2010,11 @@ class CarPlayHostActivity : ComponentActivity() {
             gravity = Gravity.CENTER
         }
         val icon = ImageView(this).apply {
-            setImageResource(R.drawable.ic_carplay)
+            // 2026-10-24：同 xPlayActivity —— 等待页也显示 App 自己的图标
+            setImageDrawable(
+                runCatching { packageManager.getApplicationIcon(packageName) }.getOrNull()
+                    ?: runCatching { getDrawable(R.drawable.ic_carplay) }.getOrNull(),
+            )
             contentDescription = getString(R.string.carplay)
         }
         panel.addView(icon, LinearLayout.LayoutParams(dp(88), dp(88)))
@@ -2127,11 +2145,32 @@ class CarPlayHostActivity : ComponentActivity() {
         }
         ViewCompat.setOnApplyWindowInsetsListener(viewport) { _, insets ->
             val safe = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
-            viewport.setPadding(safe.left, safe.top, safe.right, safe.bottom)
+            // On the X管家 head unit the whole window is padded below, so the preparation panel must
+            // not add the same insets a second time.
+            if (!headUnitRightOfClimateBar) {
+                viewport.setPadding(safe.left, safe.top, safe.right, safe.bottom)
+            }
             viewport.post { updatePreparationLayout() }
             insets
         }
         ViewCompat.requestApplyInsets(viewport)
+        if (headUnitRightOfClimateBar) {
+            // xPlay for X管家: the window fits the system windows (decorFits true), so WindowManager
+            // already lays it out right of the car's climate bar and these insets stay 0 there. The
+            // padding stays for firmware that keeps the window full screen and reports the climate bar
+            // as an inset: it moves the whole picture container clear of it. The CarPlay canvas is
+            // never resized directly — updateVideoLayout() fits the negotiated picture into whatever
+            // this container becomes, so the picture keeps its aspect ratio instead of being cropped
+            // or stretched.
+            ViewCompat.setOnApplyWindowInsetsListener(root) { view, insets ->
+                val safe = insets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout(),
+                )
+                view.setPadding(safe.left, safe.top, safe.right, safe.bottom)
+                insets
+            }
+            ViewCompat.requestApplyInsets(root)
+        }
         // Over the picture and the connection panel, under the settings menu.
         fpsCounter = FpsCounterOverlay(this, mainHandler) { sink?.liveVideoCounters() }.also { counter ->
             // CarPlay's picture is never mirrored, so the counter stays top-right in right-to-left locales too.
@@ -2808,6 +2847,8 @@ class CarPlayHostActivity : ComponentActivity() {
             (sidePanelTyres?.getChildAt(0) as? TextView)?.setTextColor(SIDE_PANEL_SECONDARY)
         }
         (picturePanel as? CarPlayPicturePanel)?.applyPalette(overlayPalette)
+        // The day/night switch also repaints the bars that sit next to the picture.
+        applyFullscreenMode()
     }
 
     private inline fun <reified T : View> findDescendant(root: View): T? =
@@ -5851,7 +5892,10 @@ class CarPlayHostActivity : ComponentActivity() {
     private fun displayLayoutChanged(newSize: DisplaySize? = activeDisplaySize): Boolean {
         val display = sessionDisplay ?: return false
         if (display.rotation != displayRotation()) return true
-        if (display.hideTopBar != hideTopBar || display.hideBottomBar != hideBottomBar) return true
+        // The X管家 head unit always keeps its bars, so the Display bar settings cannot change the
+        // layout there and must not reconnect the running session when they are previewed or saved.
+        if (!headUnitRightOfClimateBar &&
+            (display.hideTopBar != hideTopBar || display.hideBottomBar != hideBottomBar)) return true
         if (newSize != null && newSize.width > 0 && newSize.height > 0 &&
             display.windowWidth > 0 && display.windowHeight > 0) {
             // The negotiated canvas may be square to support screen rotation; compare the
@@ -6748,6 +6792,32 @@ class CarPlayHostActivity : ComponentActivity() {
     }
 
     private fun applyFullscreenMode() {
+        // The bars follow xPlay's day or night palette; the CarPlay picture itself is never touched by
+        // a theme change. [refreshAppAppearance] calls this again when the car switches day/night.
+        val barPalette = xPlayPalette.of(appNight)
+        window.statusBarColor = barPalette.systemBar
+        window.navigationBarColor = barPalette.systemBar
+        if (headUnitRightOfClimateBar) {
+            // xPlay for X管家: the head unit's left 588 px column is the car's own climate bar (a
+            // system ITYPE_CLIMATE_BAR inset) and only the rest of the screen is app space. This
+            // window therefore stays fitted to the system windows: decorFits(true) stops WindowManager
+            // giving the projection the whole screen, and the bars stay visible so the car keeps
+            // drawing that column. Hiding the bars (what the Display settings ask for on other head
+            // units) is exactly what made the CarPlay picture cover the climate bar.
+            if (harmanFullscreenApplied) {
+                HarmanFullscreenCompat.clear(window)
+                harmanFullscreenApplied = false
+            }
+            WindowCompat.setDecorFitsSystemWindows(window, true)
+            WindowInsetsControllerCompat(window, window.decorView).apply {
+                isAppearanceLightStatusBars = barPalette.systemBarIconsAreDark
+                isAppearanceLightNavigationBars = barPalette.systemBarIconsAreDark
+                show(WindowInsetsCompat.Type.statusBars())
+                show(WindowInsetsCompat.Type.navigationBars())
+            }
+            ViewCompat.requestApplyInsets(window.decorView)
+            return
+        }
         val multiWindow = isMultiWindowActive()
         if (harmanFullscreenEnabled) {
             WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -6764,6 +6834,8 @@ class CarPlayHostActivity : ComponentActivity() {
         val hideBottom = hideBottomBar && !multiWindow
         WindowCompat.setDecorFitsSystemWindows(window, !(hideTop && hideBottom))
         val controller = WindowInsetsControllerCompat(window, window.decorView)
+        controller.isAppearanceLightStatusBars = barPalette.systemBarIconsAreDark
+        controller.isAppearanceLightNavigationBars = barPalette.systemBarIconsAreDark
         val peek = temporarySystemBarsVisible && !multiWindow && !harmanFullscreenEnabled
         if (hideTop && !peek) {
             controller.hide(WindowInsetsCompat.Type.statusBars())

@@ -92,7 +92,7 @@ class ClusterMapPresentationTest {
         try {
             withPresentation { presentation ->
                 val label: android.view.View = org.robolectric.util.ReflectionHelpers.getField(presentation, "waitingLabel")
-                assertEquals(android.graphics.Color.rgb(233, 238, 246), (label.background as android.graphics.drawable.ColorDrawable).color)
+                assertEquals(xPlayPalette.LIGHT.background, (label.background as android.graphics.drawable.ColorDrawable).color)
                 assertEquals(android.graphics.Color.DKGRAY, spinner(label).indeterminateTintList?.defaultColor)
             }
         } finally {

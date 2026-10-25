@@ -4,9 +4,12 @@
     Window backgrounds must be resource references: Android 9 and older read windowBackground with
     getResourceId(), so a literal colour there leaves the window with no background at all and
     dialogs draw over the screen behind them (#640, #617).
+
+    These are X管家's day and night canvases; xPlayPalette.background and .surface must stay in step
+    with them, and the dialog themes take their accent from the matching palette accent.
     -->
-    <color name="window_background_dark">#0C111B</color>
-    <color name="window_background_light">#E9EEF6</color>
-    <color name="dialog_background_dark">#151E2C</color>
-    <color name="dialog_background_light">#F8FAFD</color>
+    <color name="window_background_dark">#2B2D4C</color>
+    <color name="window_background_light">#DBE6FD</color>
+    <color name="dialog_background_dark">#3A3A5A</color>
+    <color name="dialog_background_light">#EAF1FF</color>
 </resources>

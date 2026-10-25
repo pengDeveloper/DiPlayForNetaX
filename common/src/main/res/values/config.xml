@@ -1,3 +1,8 @@
 <resources>
     <bool name="config_advanced_audio_channel_mapping">false</bool>
+    <!-- xPlay for X管家 (NetaX): the head unit draws its own climate bar in the left 588 px column
+         and gives apps the rest of the screen, so windows must fit the system windows instead of
+         going edge-to-edge, and "Car home" opens X管家's 互联 page. The app module that ships for
+         that head unit overrides this to true (mobile/src/main/res/values/config.xml). -->
+    <bool name="config_head_unit_right_of_climate_bar">false</bool>
 </resources>

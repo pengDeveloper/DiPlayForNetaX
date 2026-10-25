@@ -2,7 +2,13 @@ package com.shilapi.xcertplay
 
 import android.graphics.Color
 
-/** Semantic colors for xPlay-owned chrome. Media canvases and cluster-specific palettes stay separate. */
+/**
+ * Semantic colors for xPlay-owned chrome. Media canvases and cluster-specific palettes stay separate.
+ *
+ * The two palettes are X管家's own: a light blue day theme and a deep blue night theme rather than
+ * a pure black one, so xPlay reads as part of the head unit's UI. Light or dark, [systemBar] mirrors
+ * [background] and [systemBarIconsAreDark] tells the system bars which icon set to draw.
+ */
 internal data class xPlayPalette(
     val background: Int,
     val surface: Int,
@@ -35,64 +41,66 @@ internal data class xPlayPalette(
     companion object {
         fun of(night: Boolean): xPlayPalette = if (night) DARK else LIGHT
 
+        /** X管家's night theme: deep blue surfaces (#2E2F56..#282B42, cards #3A3A5A), light text. */
         val DARK = xPlayPalette(
-            background = Color.rgb(12, 17, 27),
-            surface = Color.rgb(21, 30, 44),
-            button = Color.rgb(31, 43, 61),
-            outline = Color.rgb(42, 56, 75),
-            railSelected = Color.rgb(24, 54, 92),
-            railSelectedOutline = Color.rgb(42, 82, 130),
-            primaryText = Color.rgb(241, 245, 252),
-            secondaryText = Color.rgb(168, 182, 202),
-            accent = Color.rgb(166, 200, 255),
-            onAccent = Color.rgb(12, 17, 27),
-            accentTrack = Color.rgb(50, 88, 140),
-            trackOff = Color.rgb(42, 56, 75),
+            background = Color.rgb(43, 45, 76),
+            surface = Color.rgb(58, 58, 90),
+            button = Color.rgb(66, 68, 107),
+            outline = Color.rgb(79, 81, 128),
+            railSelected = Color.rgb(60, 70, 119),
+            railSelectedOutline = Color.rgb(93, 107, 166),
+            primaryText = Color.rgb(255, 255, 255),
+            secondaryText = Color.rgb(185, 190, 218),
+            accent = Color.rgb(143, 184, 248),
+            onAccent = Color.rgb(27, 29, 51),
+            accentTrack = Color.rgb(127, 163, 236),
+            trackOff = Color.rgb(74, 76, 114),
             warning = Color.rgb(255, 196, 128),
-            success = Color.rgb(127, 205, 154),
-            danger = Color.rgb(190, 45, 45),
-            ripple = 0x336F9FD9,
-            focusRing = Color.rgb(166, 200, 255),
-            systemBar = Color.rgb(12, 17, 27),
+            success = Color.rgb(76, 195, 138),
+            danger = Color.rgb(224, 108, 108),
+            ripple = 0x338FB8F8,
+            focusRing = Color.rgb(143, 184, 248),
+            systemBar = Color.rgb(43, 45, 76),
             systemBarIconsAreDark = false,
-            overlayBackground = Color.rgb(12, 16, 19),
-            overlayPrimaryText = Color.WHITE,
-            overlaySecondaryText = Color.rgb(170, 180, 190),
-            overlayAccent = Color.rgb(127, 205, 154),
-            overlayOnAccent = Color.rgb(8, 17, 11),
-            overlayAccentTrack = Color.rgb(78, 143, 102),
-            overlayTrackOff = Color.rgb(64, 74, 80),
-            overlayDanger = Color.rgb(190, 45, 45),
+            overlayBackground = Color.rgb(32, 34, 58),
+            overlayPrimaryText = Color.rgb(255, 255, 255),
+            overlaySecondaryText = Color.rgb(185, 190, 218),
+            overlayAccent = Color.rgb(143, 184, 248),
+            overlayOnAccent = Color.rgb(27, 29, 51),
+            overlayAccentTrack = Color.rgb(127, 163, 236),
+            overlayTrackOff = Color.rgb(74, 76, 114),
+            overlayDanger = Color.rgb(224, 108, 108),
         )
 
+        /** X管家's day theme: the #DBE6FD..#BDD6FF blue canvas, cards #EAF1FF, navy text. */
         val LIGHT = xPlayPalette(
-            background = Color.rgb(233, 238, 246),
-            surface = Color.rgb(248, 250, 253),
-            button = Color.rgb(220, 229, 241),
-            outline = Color.rgb(167, 181, 199),
-            railSelected = Color.rgb(215, 229, 247),
-            railSelectedOutline = Color.rgb(145, 173, 208),
-            primaryText = Color.rgb(28, 28, 30),
-            secondaryText = Color.rgb(90, 100, 116),
-            accent = Color.rgb(36, 90, 156),
+            background = Color.rgb(219, 230, 253),
+            surface = Color.rgb(234, 241, 255),
+            button = Color.rgb(203, 220, 246),
+            outline = Color.rgb(165, 185, 216),
+            railSelected = Color.rgb(199, 219, 251),
+            railSelectedOutline = Color.rgb(134, 161, 201),
+            primaryText = Color.rgb(31, 42, 68),
+            secondaryText = Color.rgb(85, 98, 122),
+            accent = Color.rgb(31, 95, 207),
             onAccent = Color.WHITE,
-            accentTrack = Color.rgb(36, 90, 156),
-            trackOff = Color.rgb(167, 181, 199),
-            warning = Color.rgb(122, 69, 0),
-            success = Color.rgb(40, 107, 63),
-            danger = Color.rgb(155, 48, 48),
-            ripple = 0x33245A9C,
-            focusRing = Color.rgb(36, 90, 156),
-            systemBar = Color.rgb(233, 238, 246),
+            accentTrack = Color.rgb(31, 95, 207),
+            trackOff = Color.rgb(188, 203, 230),
+            warning = Color.rgb(138, 82, 0),
+            success = Color.rgb(27, 107, 62),
+            danger = Color.rgb(169, 50, 50),
+            ripple = 0x331F5FCF,
+            focusRing = Color.rgb(31, 95, 207),
+            systemBar = Color.rgb(219, 230, 253),
             systemBarIconsAreDark = true,
-            overlayBackground = Color.rgb(244, 247, 250),
-            overlayPrimaryText = Color.rgb(28, 28, 30),
-            overlaySecondaryText = Color.rgb(75, 86, 101),
-            overlayAccent = Color.rgb(35, 100, 58),
+            overlayBackground = Color.rgb(242, 247, 255),
+            overlayPrimaryText = Color.rgb(31, 42, 68),
+            overlaySecondaryText = Color.rgb(85, 98, 122),
+            overlayAccent = Color.rgb(31, 95, 207),
             overlayOnAccent = Color.WHITE,
-            overlayAccentTrack = Color.rgb(35, 100, 58),
-            overlayTrackOff = Color.rgb(168, 180, 190),
-            overlayDanger = Color.rgb(155, 48, 48),
+            overlayAccentTrack = Color.rgb(31, 95, 207),
+            overlayTrackOff = Color.rgb(188, 203, 230),
+            overlayDanger = Color.rgb(169, 50, 50),
         )
     }
 }

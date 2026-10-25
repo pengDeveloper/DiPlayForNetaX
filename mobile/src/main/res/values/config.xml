@@ -1,3 +1,6 @@
 <resources>
     <bool name="config_advanced_audio_channel_mapping">true</bool>
+    <!-- This app ships for the X管家 head unit: the left 588 px of its screen is the car's own
+         climate bar, not app space. See common's config.xml for what the flag changes. -->
+    <bool name="config_head_unit_right_of_climate_bar">true</bool>
 </resources>

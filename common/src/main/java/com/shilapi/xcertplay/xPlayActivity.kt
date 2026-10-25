@@ -81,6 +81,7 @@ import com.shilapi.xcertplay.network.CarHotspotSettings
 import com.shilapi.xcertplay.network.CarHotspotTethering
 import com.shilapi.xcertplay.network.HotspotCredentials
 import com.shilapi.xcertplay.network.WifiP2pChannels
+import com.shilapi.xcertplay.orchestration.CarHomeLauncher
 import com.shilapi.xcertplay.orchestration.ManualHotspotProvisioning
 import com.shilapi.xcertplay.orchestration.ManualHotspotSecurity
 import com.shilapi.xcertplay.orchestration.ManualHotspotValidation
@@ -202,6 +203,11 @@ class xPlayActivity : ComponentActivity(), AppAppearanceOwner {
     private var pendingWireless = false
     private var bluetoothSettingsVisited = false
     private var initialLaunch = true
+    /**
+     * True on the X管家 head unit, whose left column is the car's own climate bar rather than app
+     * space: the window then fits the system windows instead of going edge-to-edge (see [onCreate]).
+     */
+    private var headUnitRightOfClimateBar = false
     private var notificationTransport = true
     private var exportInProgress = false
     private var usbPermissionOperation: UsbPermissionSetup.Operation? = null
@@ -389,10 +395,16 @@ class xPlayActivity : ComponentActivity(), AppAppearanceOwner {
         // before showing anything, so the cluster is not left on xPlay's last frame.
         GeelyClusterProjection.releaseStale(applicationContext)
         PhoneAudioRoute.attach(applicationContext)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+        // xPlay for X管家: the head unit's left 588 px column is the car's own climate bar, delivered
+        // as a system ITYPE_CLIMATE_BAR inset; the rest of the screen is the app area. With decorFits
+        // true WindowManager lays xPlay out in that right-hand area, so neither its window background
+        // nor its pages paint over the climate bar. Other builds keep their edge-to-edge layout.
+        headUnitRightOfClimateBar = resources.getBoolean(R.bool.config_head_unit_right_of_climate_bar)
+        WindowCompat.setDecorFitsSystemWindows(window, !headUnitRightOfClimateBar)
         if (Build.VERSION.SDK_INT >= 28) {
             window.attributes = window.attributes.apply {
-                layoutInDisplayCutoutMode = android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+                layoutInDisplayCutoutMode =
+                    android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
             }
         }
         applyWindowAppearance()
@@ -607,6 +619,27 @@ class xPlayActivity : ComponentActivity(), AppAppearanceOwner {
     }
 
     private fun applyFullscreenMode() {
+        // The bars carry the palette's background colour and the icon set that stays readable on it
+        // (dark icons on the light day theme, light icons on the night theme).
+        window.statusBarColor = palette.systemBar
+        window.navigationBarColor = palette.systemBar
+        if (headUnitRightOfClimateBar) {
+            // xPlay for X管家: the head unit's left 588 px column is the car's own climate bar (a
+            // system ITYPE_CLIMATE_BAR inset) and only the rest belongs to apps. The window must
+            // therefore stay fitted to the system windows, and the bars must stay visible: hiding
+            // them (the Display "hide the status/navigation bar" settings) is what let xPlay expand
+            // to the whole screen and cover the climate bar. The car sets those bars' colours, so
+            // the icons only follow xPlay's light or dark appearance.
+            WindowCompat.setDecorFitsSystemWindows(window, true)
+            WindowInsetsControllerCompat(window, window.decorView).apply {
+                isAppearanceLightStatusBars = palette.systemBarIconsAreDark
+                isAppearanceLightNavigationBars = palette.systemBarIconsAreDark
+                show(WindowInsetsCompat.Type.statusBars())
+                show(WindowInsetsCompat.Type.navigationBars())
+            }
+            ViewCompat.requestApplyInsets(window.decorView)
+            return
+        }
         val multiWindow = Build.VERSION.SDK_INT >= 24 && isInMultiWindowMode
         WindowInsetsControllerCompat(window, window.decorView).apply {
             isAppearanceLightStatusBars = palette.systemBarIconsAreDark
@@ -727,6 +760,10 @@ class xPlayActivity : ComponentActivity(), AppAppearanceOwner {
         }
         // Keep the background full screen, but all controls inside the camera and
         // visible system/keyboard bounds. Insets are physical pixels, not scaled dp.
+        // On the X管家 head unit the window already fits the system windows (decorFits true in
+        // [onCreate]), so the decor consumes the bars and this listener receives what is left: its
+        // padding stays 0 there and cannot be added twice. It remains as the guard for firmware that
+        // keeps the window full screen and delivers the climate bar as an unconsumed inset instead.
         val baseLeft = root.paddingLeft
         val baseTop = root.paddingTop
         val baseRight = root.paddingRight
@@ -787,11 +824,19 @@ class xPlayActivity : ComponentActivity(), AppAppearanceOwner {
         }
     }
 
+    /**
+     * 2026-10-24 车主定调：应用内也要显示 **App 自己的图标**（X管家 风格的 launcher icon），
+     * 不再用上游的绿色 CarPlay logo（ic_carplay）。取不到时回退旧 logo，不影响可用性。
+     */
+    private fun appBrandIcon(): android.graphics.drawable.Drawable? = runCatching {
+        packageManager.getApplicationIcon(packageName)
+    }.getOrNull() ?: runCatching { getDrawable(R.drawable.ic_carplay) }.getOrNull()
+
     private fun standardHeader(compact: Boolean): LinearLayout = row().apply {
         gravity = Gravity.CENTER_VERTICAL
         val logoSize = dp(if (compact) 30 else 36)
         addView(ImageView(this@xPlayActivity).apply {
-            setImageResource(R.drawable.ic_carplay)
+            setImageDrawable(appBrandIcon())
             contentDescription = getString(R.string.carplay)
         }, LinearLayout.LayoutParams(logoSize, logoSize))
         addView(label(getString(R.string.xplay), if (compact) 20 else 26, TEXT, true,
@@ -803,7 +848,7 @@ class xPlayActivity : ComponentActivity(), AppAppearanceOwner {
         })
         addView(headerButton(if (page == "home") getString(R.string.car_home) else getString(R.string.back),
             if (page == "home") R.drawable.ic_dp_car else R.drawable.ic_dp_back, compact) {
-            if (page == "home") startActivity(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME))
+            if (page == "home") openCarHome()
             else navigateBack()
         }, LinearLayout.LayoutParams(-2, if (compact) dp(44) else dp(52)))
     }
@@ -840,6 +885,15 @@ class xPlayActivity : ComponentActivity(), AppAppearanceOwner {
             }
         }
         render()
+    }
+
+    /**
+     * The header's "Car home" control: the car's home screen, which on the X管家 head unit is
+     * X管家's 互联 page rather than the Android home screen (see [CarHomeLauncher]). The Android home
+     * screen stays the fallback where X管家 is not installed, so this control never fails.
+     */
+    private fun openCarHome() {
+        CarHomeLauncher.open(this)
     }
 
     private fun openConnectionSetupFromSettings() {
@@ -917,7 +971,6 @@ class xPlayActivity : ComponentActivity(), AppAppearanceOwner {
             this,
             if (appNight) AppAppearance.LIGHT else AppAppearance.DARK,
         )
-        rememberLaunchAppearance()
         requestAppearanceRender(focusAppearanceButton = true)
     }.apply {
         tag = APPEARANCE_BUTTON_TAG
@@ -982,7 +1035,7 @@ class xPlayActivity : ComponentActivity(), AppAppearanceOwner {
         card.addView(disconnectButton, matchButton(if (compact) CONTROL_GAP_DP else 16, if (compact) 46 else 56))
         val right = column().apply { gravity = Gravity.CENTER_HORIZONTAL }
         val logo = ImageView(this).apply {
-            setImageResource(R.drawable.ic_carplay)
+            setImageDrawable(appBrandIcon())
             contentDescription = getString(R.string.carplay_icon)
             scaleType = ImageView.ScaleType.FIT_CENTER
         }
@@ -1861,7 +1914,6 @@ class xPlayActivity : ComponentActivity(), AppAppearanceOwner {
                 reconnects = false,
             ) { index ->
                 AirPlayPersistence.saveAppAppearance(this, appearances[index])
-                rememberLaunchAppearance()
                 handler.post { checkForAppearanceChange() }
             }
             card.addView(label(getString(R.string.settings_app_appearance_description), 14, MUTED))
@@ -6812,26 +6864,21 @@ class xPlayActivity : ComponentActivity(), AppAppearanceOwner {
         if (resolved == appNight && palette === xPlayPalette.of(resolved)) return false
         appNight = resolved
         palette = xPlayPalette.of(resolved)
+        // The starting window of the next launch follows the mode xPlay shows now.
+        rememberLaunchAppearance()
         return true
     }
 
     // The system draws the next launch's starting window before any app code runs. API 33 is the first
-    // release that lets the app choose it; older head units keep the dark frame. Auto stays dark: the time
-    // of the next launch is unknown, and a dark frame in daylight is safer than a bright frame at night.
+    // release that lets the app choose it; older head units keep the dark frame. The frame follows the
+    // resolved appearance, which by default is the car's own day/night mode.
     private fun rememberLaunchAppearance() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
-        val light = AirPlayPersistence.loadAppAppearance(this) == AppAppearance.LIGHT
-        splashScreen.setSplashScreenTheme(if (light) R.style.Theme_Xcertplay_Light else R.style.Theme_Xcertplay)
+        splashScreen.setSplashScreenTheme(if (appNight) R.style.Theme_Xcertplay else R.style.Theme_Xcertplay_Light)
     }
 
     private fun applyWindowAppearance() {
         window.setBackgroundDrawable(ColorDrawable(palette.background))
-        window.statusBarColor = palette.systemBar
-        window.navigationBarColor = palette.systemBar
-        WindowInsetsControllerCompat(window, window.decorView).apply {
-            isAppearanceLightStatusBars = palette.systemBarIconsAreDark
-            isAppearanceLightNavigationBars = palette.systemBarIconsAreDark
-        }
         applyFullscreenMode()
     }
 

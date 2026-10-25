@@ -22,6 +22,9 @@
     <!-- The centre card also follows whichever launcher is the default home. -->
     <queries>
         <package android:name="com.byd.carsettings" />
+        <!-- X管家, the head unit's launcher: the "Car home" control asks it for its 互联 page with
+             getLaunchIntentForPackage, which package visibility filters on Android 11+. -->
+        <package android:name="com.xbutler" />
         <intent>
             <action android:name="android.intent.action.VIEW" />
             <data android:scheme="content" android:mimeType="application/vnd.android.package-archive" />
@@ -158,9 +161,12 @@
                 android:resource="@xml/wheel_key_service" />
         </service>
 
+        <!-- Off by default: xPlay must not start with the car unless the driver asks for it.
+             The receiver and the "open after the car starts" setting are kept so a head unit
+             build that wants boot auto-start can turn this back on. -->
         <receiver
             android:name="com.shilapi.xcertplay.BootReceiver"
-            android:enabled="true"
+            android:enabled="false"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

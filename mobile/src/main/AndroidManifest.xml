@@ -23,9 +23,11 @@
             android:name="BYD_SUPPORT_SPLIT_ACTIVITY"
             android:value="1" />
 
+        <!-- The main xPlay app keeps boot auto-start off by default, like the library receiver.
+             tools:replace stays so this app's value wins over any dependency that enables it. -->
         <receiver
             android:name="com.shilapi.xcertplay.BootReceiver"
-            android:enabled="true"
+            android:enabled="false"
             tools:replace="android:enabled" />
 
         <receiver

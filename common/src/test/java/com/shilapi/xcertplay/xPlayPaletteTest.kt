@@ -15,31 +15,44 @@ import kotlin.math.pow
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [33], manifest = Config.NONE)
 class xPlayPaletteTest {
-    @Test fun darkPalettePreservesTheExistingProductionColors() {
+    @Test fun darkPaletteUsesTheDeepBlueNightTheme() {
         val palette = xPlayPalette.DARK
-        assertEquals(Color.rgb(12, 17, 27), palette.background)
-        assertEquals(Color.rgb(21, 30, 44), palette.surface)
-        assertEquals(Color.rgb(31, 43, 61), palette.button)
-        assertEquals(Color.rgb(42, 56, 75), palette.outline)
-        assertEquals(Color.rgb(24, 54, 92), palette.railSelected)
-        assertEquals(Color.rgb(42, 82, 130), palette.railSelectedOutline)
-        assertEquals(Color.rgb(241, 245, 252), palette.primaryText)
-        assertEquals(Color.rgb(168, 182, 202), palette.secondaryText)
-        assertEquals(Color.rgb(166, 200, 255), palette.accent)
+        assertEquals(Color.rgb(43, 45, 76), palette.background)
+        assertEquals(Color.rgb(58, 58, 90), palette.surface)
+        assertEquals(Color.rgb(66, 68, 107), palette.button)
+        assertEquals(Color.rgb(79, 81, 128), palette.outline)
+        assertEquals(Color.rgb(60, 70, 119), palette.railSelected)
+        assertEquals(Color.rgb(93, 107, 166), palette.railSelectedOutline)
+        assertEquals(Color.rgb(255, 255, 255), palette.primaryText)
+        assertEquals(Color.rgb(185, 190, 218), palette.secondaryText)
+        assertEquals(Color.rgb(143, 184, 248), palette.accent)
         assertEquals(Color.rgb(255, 196, 128), palette.warning)
-        assertEquals(Color.rgb(127, 205, 154), palette.success)
-        assertEquals(Color.rgb(190, 45, 45), palette.danger)
-        assertEquals(0x336F9FD9, palette.ripple)
+        assertEquals(Color.rgb(76, 195, 138), palette.success)
+        assertEquals(Color.rgb(224, 108, 108), palette.danger)
+        assertEquals(0x338FB8F8, palette.ripple)
         assertFalse(palette.systemBarIconsAreDark)
+    }
+
+    @Test fun lightPaletteUsesTheLightBlueDayTheme() {
+        val palette = xPlayPalette.LIGHT
+        assertEquals(Color.rgb(219, 230, 253), palette.background)
+        assertEquals(Color.rgb(234, 241, 255), palette.surface)
+        assertEquals(Color.rgb(31, 42, 68), palette.primaryText)
+        assertEquals(Color.rgb(85, 98, 122), palette.secondaryText)
+        assertEquals(Color.rgb(31, 95, 207), palette.accent)
+        assertEquals(Color.WHITE, palette.onAccent)
+        assertEquals(Color.rgb(138, 82, 0), palette.warning)
+        assertEquals(Color.rgb(27, 107, 62), palette.success)
+        assertTrue(palette.systemBarIconsAreDark)
     }
 
     @Test fun waitingScreenDelegationKeepsItsExactLightAndDarkColors() {
         assertEquals(
-            WaitingScreenColors(Color.rgb(12, 17, 27), Color.rgb(241, 245, 252), Color.rgb(168, 182, 202)),
+            WaitingScreenColors(Color.rgb(43, 45, 76), Color.rgb(255, 255, 255), Color.rgb(185, 190, 218)),
             WaitingScreenColors.of(night = true),
         )
         assertEquals(
-            WaitingScreenColors(Color.rgb(233, 238, 246), Color.rgb(28, 28, 30), Color.rgb(90, 100, 116)),
+            WaitingScreenColors(Color.rgb(219, 230, 253), Color.rgb(31, 42, 68), Color.rgb(85, 98, 122)),
             WaitingScreenColors.of(night = false),
         )
     }

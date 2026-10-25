@@ -27,6 +27,7 @@ class UpdateHomeAvailabilityTest {
     @After fun clear() = UpdateAvailability.clearAllForTest(application)
 
     @Test fun cachedUpdateAppearsBelowTheVersionAndOpensTheExistingDownloadFlow() {
+        AirPlayPersistence.saveAppAppearance(application, AppAppearance.DARK)
         val release = release()
         UpdateAvailability.save(application, release)
         val controller = Robolectric.buildActivity(xPlayActivity::class.java).setup()

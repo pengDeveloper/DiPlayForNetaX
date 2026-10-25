@@ -11,11 +11,22 @@ enum class AppAppearance(val key: String) {
     AUTO("auto");
 
     companion object {
-        fun fromKey(key: String?): AppAppearance = entries.firstOrNull { it.key == key } ?: DARK
+        /**
+         * A head unit that has never chosen an appearance follows the car's own day/night mode
+         * ([AUTO]), like X管家's own screens. The appearance buttons save DARK or LIGHT, and only
+         * those explicit choices override the car's mode.
+         */
+        fun fromKey(key: String?): AppAppearance = entries.firstOrNull { it.key == key } ?: AUTO
     }
 }
 
-/** Resolves xPlay chrome without changing the day/night mode sent to CarPlay. */
+/**
+ * Resolves xPlay chrome without changing the day/night mode sent to CarPlay.
+ *
+ * AUTO (the default) follows the car: the live result the CarPlay host publishes while it runs, else
+ * the saved CarPlay policy, whose own default (SYSTEM) is the head unit's day/night uiMode. DARK and
+ * LIGHT are the driver's explicit choices and win over both.
+ */
 internal fun resolveAppNight(
     appearance: AppAppearance,
     carPlayMode: CarPlayNightMode,
